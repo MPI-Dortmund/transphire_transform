@@ -1,16 +1,39 @@
-import setuptools
+"""
+MIT License
+
+Copyright (c) 2018 Max Planck Institute of Molecular Physiology
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 import os
+import setuptools
 
-here = os.path.abspath(os.path.dirname(__file__))
+CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+with open(os.path.join(CURRENT_DIR, 'README.md'), encoding='utf-8') as f:
+    LONG_DESCRIPTION = f.read()
 
 setuptools.setup(
     name='transphire_transform',
     version='0.0.1',
     description='Utilites to change between SPHIRE, RELION and to modify the data',
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     url='https://github.com/MPI-Dortmund/transphire_transform',
     author='Markus Stabrin',
     author_email='markus.stabrin@tu-dortmund.de',
@@ -21,11 +44,11 @@ setuptools.setup(
         'console_scripts': [
             ]
         },
-    install_requires = [
-        'numpy>=1.15.0,<1.16.0',
+    install_requires=[
+        'pandas',
         ],
     python_requires='~=2.7',
-    classifiers = (
+    classifiers=(
         'Programming Language :: Python :: 2.7, 3.7',
         'License :: OSI Approved :: MIT',
         'Operating System :: POSIX :: Linux',
@@ -33,4 +56,3 @@ setuptools.setup(
         'Development Status :: 4 - Beta'
         ),
     )
-
