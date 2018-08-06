@@ -26,6 +26,7 @@ SOFTWARE.
 import os
 import numpy as np
 import pandas as pd
+import pytest
 from .. import load_star
 from ...dump import dump_star
 
@@ -87,3 +88,14 @@ def test_load_star_four(tmpdir):
     output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_four.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
+
+
+def test_load_star_single_empty(tmpdir):
+    """
+    """
+
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_single_empty.star')
+    with open(output_file, 'w'):
+        pass
+    with pytest.raises(IOError):
+        data_load = load_star.load_star(file_name=output_file)

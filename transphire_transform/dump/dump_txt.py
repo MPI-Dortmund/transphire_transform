@@ -21,48 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import List
-import pandas as pd
-from . import dump_util
 
 
-def create_star_header(names: List[str]) -> List[str]:
+def dump_txt(file_name, data, header):
     """
-    Create a header for a relion star file.
-
-    Arguments:
-    names - List or array of header names
-
-    Returns:
-    Header string
     """
-    output_list: List[str] = [
-        '',
-        'data_',
-        '',
-        'loop_',
-        ]
-    output_list.extend(dump_util.create_header(names=names, index=True))
-    return output_list
-
-
-def dump_star(file_name: str, data: pd.DataFrame) -> None:
-    """
-    Create a relion star file.
-
-    Arguments:
-    file_name - File name to export
-    data - Data to export
-
-    Returns:
-    None
-    """
-    if data.empty:
-        raise IOError(f'Cannot write empty data to ${file_name}')
-    header: List[str] = create_star_header(names=data.keys())
-    dump_util.dump_file(
-        file_name=file_name,
-        data=data,
-        header=header,
-        vertical=True
-        )
+    return data

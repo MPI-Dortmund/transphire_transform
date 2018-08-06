@@ -51,6 +51,10 @@ def load_header(file_name: str) -> Tuple[List[str], int]:
                     header_names.append(line.strip().split()[0])
             elif start_header:
                 break
+
+    if not start_header:
+        raise IOError(f'No header information found in {file_name}')
+
     return header_names, idx
 
 

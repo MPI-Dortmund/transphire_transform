@@ -21,48 +21,52 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import List
+from typing import List, Optional
 import pandas as pd
-from . import dump_util
 
 
-def create_star_header(names: List[str]) -> List[str]:
+def create_header(names: List[str], index: bool) -> List[str]:
     """
-    Create a header for a relion star file.
+    Create header for output file.
 
     Arguments:
-    names - List or array of header names
+    names - Header names
+    index - Create indexed header
 
     Returns:
-    Header string
+    List of header entries
     """
-    output_list: List[str] = [
-        '',
-        'data_',
-        '',
-        'loop_',
-        ]
-    output_list.extend(dump_util.create_header(names=names, index=True))
+    output_list: List[str] = []
+    if index:
+        for idx, name in enumerate(names):
+            output_list.append(f'{name} #{idx+1}')
+    else:
+        for name in names:
+            output_list.append(name)
+
+    if not output_list:
+        raise IOError('Cannot create header from empty sequence')
+
     return output_list
 
 
-def dump_star(file_name: str, data: pd.DataFrame) -> None:
-    """
-    Create a relion star file.
+def dump_file(
+        file_name: str,
+        data: pd.DataFrame,
+        header: Optional[List[str]] = None,
+        vertical: bool = True
+        ) -> None:
 
-    Arguments:
-    file_name - File name to export
-    data - Data to export
+    if vertical:
+        orientation = '\n'
+    else:
+        orientation = '\t'
 
-    Returns:
-    None
-    """
-    if data.empty:
-        raise IOError(f'Cannot write empty data to ${file_name}')
-    header: List[str] = create_star_header(names=data.keys())
-    dump_util.dump_file(
-        file_name=file_name,
-        data=data,
-        header=header,
-        vertical=True
-        )
+    if header is None:
+        export_header = ''
+    else:
+        export_header = '{0}\n'.format(orientation.join(header))
+
+    with open(file_name, 'w') as write:
+        write.write(f'{export_header}')
+    data.to_csv(file_name, sep='\t', header=False, index=False, mode='a')

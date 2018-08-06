@@ -24,6 +24,7 @@ SOFTWARE.
 
 
 import os
+import pytest
 import pandas as pd
 import numpy as np
 from .. import dump_star
@@ -54,7 +55,7 @@ def test_create_star_header_four_list():
         '_pipeTest4 #4',
         ]
 
-    assert dump_star.create_star_header(names=header_names) == '\n'.join(expected_output)
+    assert dump_star.create_star_header(names=header_names) == expected_output
 
 
 def test_create_star_header_four_array():
@@ -78,7 +79,7 @@ def test_create_star_header_four_array():
         '_pipeTest4 #4',
         ]
 
-    assert dump_star.create_star_header(names=header_names) == '\n'.join(expected_output)
+    assert dump_star.create_star_header(names=header_names) == expected_output
 
 
 def test_create_star_header_single_list():
@@ -96,7 +97,7 @@ def test_create_star_header_single_list():
         '_rlnTest1 #1',
         ]
 
-    assert dump_star.create_star_header(names=header_names) == '\n'.join(expected_output)
+    assert dump_star.create_star_header(names=header_names) == expected_output
 
 
 def test_create_star_header_single_array():
@@ -114,7 +115,7 @@ def test_create_star_header_single_array():
         '_rlnTest1 #1',
         ]
 
-    assert dump_star.create_star_header(names=header_names) == '\n'.join(expected_output)
+    assert dump_star.create_star_header(names=header_names) == expected_output
 
 
 def test_dump_star_four(tmpdir):
@@ -131,7 +132,7 @@ def test_dump_star_four(tmpdir):
         '_pipeTest4': data_4,
         })
 
-    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
+    output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
 
@@ -144,6 +145,17 @@ def test_dump_star_single(tmpdir):
         '_rlnTest1': data_1,
         })
 
-    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single.star')
+    output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
+
+
+def test_dump_star_single_empty(tmpdir):
+    """
+    """
+    data = pd.DataFrame({
+        })
+
+    output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single_empty.star')
+    with pytest.raises(IOError):
+        dump_star.dump_star(file_name=output_file, data=data)
