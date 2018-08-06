@@ -30,23 +30,21 @@ from .. import load_star
 from ...dump import dump_star
 
 
-OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS'
+OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_LOAD'
 
 
-def test_load_header_single():
+def test_load_header_single(tmpdir):
     data_1 = np.arange(4)
     data = pd.DataFrame({
         '_rlnTest1': data_1,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_load_header_single.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_header_single.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_header(file_name=output_file) == (data.keys().tolist(), 5)
 
 
-def test_load_header_four():
+def test_load_header_four(tmpdir):
     data_1 = np.arange(4)
     data_2 = ['a', 'b', 'c', 'd']
     data_3 = np.array(np.arange(4), dtype=float)
@@ -58,27 +56,23 @@ def test_load_header_four():
         '_pipeTest4': data_4,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_load_header_four.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_header_four.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_header(file_name=output_file) == (data.keys().tolist(), 8)
 
 
-def test_load_star_single():
+def test_load_star_single(tmpdir):
     data_1 = np.arange(4)
     data = pd.DataFrame({
         '_rlnTest1': data_1,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_load_star_single.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_single.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
 
 
-def test_load_star_four():
+def test_load_star_four(tmpdir):
     data_1 = np.arange(4)
     data_2 = ['a', 'b', 'c', 'd']
     data_3 = np.array(np.arange(4), dtype=float)
@@ -90,8 +84,6 @@ def test_load_star_four():
         '_pipeTest4': data_4,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_load_star_four.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_four.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
