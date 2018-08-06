@@ -23,11 +23,11 @@ SOFTWARE.
 """
 
 
+from typing import List, Tuple
 import pandas as pd
-from typing import List, Union
 
 
-def load_header(file_name: str) -> Union[List[str], int]:
+def load_header(file_name: str) -> Tuple[List[str], int]:
     """
     Load the header information.
 
@@ -39,18 +39,18 @@ def load_header(file_name: str) -> Union[List[str], int]:
     """
     start_header: bool = False
     header_names: List[str] = []
+    idx: int
 
     with open(file_name, 'r') as read:
         for idx, line in enumerate(read.readlines()):
-            if line.startswith('_') and not start_header:
-                start_header = True
-                header_names.append(line.strip().split()[0])
-            elif not line.startswith('_') and start_header:
-                break
+            if line.startswith('_'):
+                if start_header:
+                    header_names.append(line.strip().split()[0])
+                else:
+                    start_header = True
+                    header_names.append(line.strip().split()[0])
             elif start_header:
-                header_names.append(line.strip().split()[0])
-            else:
-                continue
+                break
     return header_names, idx
 
 

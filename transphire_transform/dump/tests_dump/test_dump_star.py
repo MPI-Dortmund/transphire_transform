@@ -30,7 +30,7 @@ from .. import dump_star
 from ...load import load_star
 
 
-OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS'
+OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
 
 
 def test_create_star_header_four_list():
@@ -117,7 +117,7 @@ def test_create_star_header_single_array():
     assert dump_star.create_star_header(names=header_names) == '\n'.join(expected_output)
 
 
-def test_dump_star_four():
+def test_dump_star_four(tmpdir):
     """
     """
     data_1 = np.arange(4)
@@ -131,14 +131,12 @@ def test_dump_star_four():
         '_pipeTest4': data_4,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_dump_star_four.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
 
 
-def test_dump_star_single():
+def test_dump_star_single(tmpdir):
     """
     """
     data_1 = np.arange(4)
@@ -146,8 +144,6 @@ def test_dump_star_single():
         '_rlnTest1': data_1,
         })
 
-    if not os.path.exists(OUTPUT_TEST_FOLDER):
-        os.mkdir(OUTPUT_TEST_FOLDER)
-    output_file = os.path.join(OUTPUT_TEST_FOLDER, 'test_dump_star_single.star')
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single.star')
     dump_star.dump_star(file_name=output_file, data=data)
     assert load_star.load_star(file_name=output_file).equals(data)
