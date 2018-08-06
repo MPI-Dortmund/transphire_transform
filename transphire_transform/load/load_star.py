@@ -76,3 +76,5 @@ def load_star(file_name: str) -> pd.DataFrame:
         skiprows=skip_index
         )
     return star_data
+
+def ok
