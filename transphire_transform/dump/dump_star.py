@@ -61,5 +61,3 @@ def dump_star(file_name: str, data: pd.DataFrame) -> None:
     with open(file_name, 'w') as write:
         write.write(f'{header}\n')
     data.to_csv(file_name, sep='\t', header=False, index=False, mode='a')
-
-def ok
