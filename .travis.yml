@@ -10,7 +10,9 @@ script:
     - bash run_tests.sh
 after_success:
     - coveralls
-dist:
-    - xenial
-sudo:
-    -true
+
+matrix:
+    include:
+        - os: linux
+          dist: xenial
+          sudo: true
