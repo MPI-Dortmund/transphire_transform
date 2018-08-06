@@ -43,15 +43,14 @@ def load_header(file_name: str) -> Tuple[List[str], int]:
 
     with open(file_name, 'r') as read:
         for idx, line in enumerate(read.readlines()):
-            if line.startswith('_') and not start_header:
-                start_header = True
-                header_names.append(line.strip().split()[0])
-            elif not line.startswith('_') and start_header:
-                break
+            if line.startswith('_'):
+                if start_header:
+                    header_names.append(line.strip().split()[0])
+                else:
+                    start_header = True
+                    header_names.append(line.strip().split()[0])
             elif start_header:
-                header_names.append(line.strip().split()[0])
-            else:
-                assert not start_header
+                break
     return header_names, idx
 
 
