@@ -98,6 +98,6 @@ then
         my_${name}
     done
 else
-        my_${name}
+        my_${1}
         exit ${?}
 fi
