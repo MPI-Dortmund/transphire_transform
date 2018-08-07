@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import List, Optional
-import pandas as pd
+from typing import List, Optional, Dict, Any
+import pandas as pd # type: ignore
 
 
 def create_header(names: List[str], index: bool) -> List[str]:
@@ -94,7 +94,7 @@ def load_file(
         header: Optional[List[int]] = None,
         skiprows: int = 0,
         delim_whitespace: bool = True,
-        **kwargs
+        **kwargs: Dict[str, Any]
     ) -> pd.DataFrame:
     """
     Load the content of a file.
