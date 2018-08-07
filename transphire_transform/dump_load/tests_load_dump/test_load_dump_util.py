@@ -24,7 +24,7 @@ SOFTWARE.
 
 import numpy as np
 import pytest
-from .. import dump_util
+from .. import load_dump_util
 
 
 def test_create_header_list():

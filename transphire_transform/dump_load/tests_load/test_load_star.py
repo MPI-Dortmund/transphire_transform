@@ -28,7 +28,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from .. import load_star
-from ...dump import dump_star
+from .. import dump_star
 
 
 OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_LOAD'

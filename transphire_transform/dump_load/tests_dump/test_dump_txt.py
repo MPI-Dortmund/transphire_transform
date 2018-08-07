@@ -21,48 +21,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import List
+
+import numpy as np
 import pandas as pd
-from . import dump_util
+from .. import dump_txt
+from .. import load_txt
 
 
-def create_star_header(names: List[str]) -> List[str]:
+OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
+
+
+def test_dump_txt_four_noheader(tmpdir):
     """
-    Create a header for a relion star file.
-
-    Arguments:
-    names - List or array of header names
-
-    Returns:
-    Header string
     """
-    output_list: List[str] = [
-        '',
-        'data_',
-        '',
-        'loop_',
-        ]
-    output_list.extend(dump_util.create_header(names=names, index=True))
-    return output_list
-
-
-def dump_star(file_name: str, data: pd.DataFrame) -> None:
-    """
-    Create a relion star file.
-
-    Arguments:
-    file_name - File name to export
-    data - Data to export
-
-    Returns:
-    None
-    """
-    if data.empty:
-        raise IOError(f'Cannot write empty data to ${file_name}')
-    header: List[str] = create_star_header(names=data.keys())
-    dump_util.dump_file(
-        file_name=file_name,
-        data=data,
-        header=header,
-        vertical=True
-        )
+    data_1 = np.arange(4)
+    data_2 = ['a', 'b', 'c', 'd']
+    data_3 = np.array(np.arange(4), dtype=float)
+    data_4 = [1]*4
+    data = pd.DataFrame({
+        '_rlnTest1': data_1,
+        '_rlnTest2': data_2,
+        '_rlnTest3': data_3,
+        '_pipeTest4': data_4,
+        })
+    output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
+    dump_txt.dump_txt(file_name=output_file, data=data, header=False)
+    assert load_txt.load_txt(file_name=output_file, header=False).equals(data)
