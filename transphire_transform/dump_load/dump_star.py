@@ -42,7 +42,7 @@ def create_star_header(names: List[str]) -> List[str]:
         '',
         'loop_',
         ]
-    output_list.extend(dump_load_util.create_header(names=names, index=True))
+    output_list.extend(load_dump_util.create_header(names=names, index=True))
     return output_list
 
 
@@ -57,10 +57,8 @@ def dump_star(file_name: str, data: pd.DataFrame) -> None:
     Returns:
     None
     """
-    if data.empty:
-        raise IOError(f'Cannot write empty data to ${file_name}')
     header: List[str] = create_star_header(names=data.keys())
-    dump_load_util.dump_file(
+    load_dump_util.dump_file(
         file_name=file_name,
         data=data,
         header=header,

@@ -28,6 +28,7 @@ import pandas as pd
 def create_header(names: List[str], index: bool) -> List[str]:
     """
     Create header for output file.
+    An IOError is raised, if the output list is empty.
 
     Arguments:
     names - Header names
@@ -55,7 +56,22 @@ def dump_file(
         data: pd.DataFrame,
         header: Optional[List[str]] = None,
         vertical: bool = True
-        ) -> None:
+    ) -> None:
+    """
+    Dump a file with or without a header to an output file.
+
+    Arguments:
+    file_name - Name of the output file
+    data - Pandas dataframe containing the data to dump
+    header - List of header names (Default None)
+    vertical - Stack the header vertical or horizontal (default vertical)
+
+    Returns:
+    None
+    """
+
+    if data.empty:
+        raise IOError(f'Cannot write empty data to {file_name}')
 
     if vertical:
         orientation = '\n'
@@ -70,3 +86,36 @@ def dump_file(
     with open(file_name, 'w') as write:
         write.write(f'{export_header}')
     data.to_csv(file_name, sep='\t', header=False, index=False, mode='a')
+
+
+def load_file(
+        file_name: str,
+        names: Optional[List[str]] = None,
+        header: Optional[List[int]] = None,
+        skiprows: int = 0,
+        delim_whitespace: bool = True,
+        **kwargs
+    ) -> pd.DataFrame:
+    """
+    Load the content of a file.
+    Kwargs are options of the read_cvs function:
+    https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
+
+    Arguments:
+    file_name - Name of the file that contains the data
+    header - List of header names
+    skiprows - Nr of rows to skip
+    delim_whitespace - Use whitespace as delimiters
+
+    Returns:
+    Pandas dataframe containing the data
+    """
+    star_data = pd.read_csv(
+        file_name,
+        header=header,
+        names=names,
+        skiprows=skiprows,
+        delim_whitespace=delim_whitespace,
+        **kwargs
+        )
+    return star_data

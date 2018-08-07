@@ -23,66 +23,248 @@ SOFTWARE.
 """
 
 import numpy as np
+import pandas as pd
 import pytest
 from .. import load_dump_util
 
 
-def test_create_header_list():
-    """
-    """
-    header = ['a', 'b', 'c', 'd']
-    assert dump_util.create_header(names=header, index=False) == header
+OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_LOAD_DUMP_UTIL'
 
 
-def test_create_header_index_list():
-    """
-    """
-    header = ['a', 'b', 'c', 'd']
-    header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-    assert dump_util.create_header(names=header, index=True) == header_out
+class TestCreateHeader:
+    def test_create_header_list(self):
+        """
+        """
+        header = ['a', 'b', 'c', 'd']
+        assert load_dump_util.create_header(names=header, index=False) == header
 
 
-def test_create_header_array():
-    """
-    """
-    header = np.array(['a', 'b', 'c', 'd'], dtype=str)
-    assert dump_util.create_header(names=header, index=False) == header.tolist()
+    def test_create_header_index_list(self):
+        """
+        """
+        header = ['a', 'b', 'c', 'd']
+        header_out = ['a #1', 'b #2', 'c #3', 'd #4']
+        assert load_dump_util.create_header(names=header, index=True) == header_out
 
 
-def test_create_header_index_array():
-    """
-    """
-    header = np.array(['a', 'b', 'c', 'd'], dtype=str)
-    header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-    assert dump_util.create_header(names=header, index=True) == header_out
+    def test_create_header_array(self):
+        """
+        """
+        header = np.array(['a', 'b', 'c', 'd'], dtype=str)
+        assert load_dump_util.create_header(names=header, index=False) == header.tolist()
 
 
-def test_create_header_array_empty():
-    """
-    """
-    header = np.array([], dtype=str)
-    with pytest.raises(IOError):
-        dump_util.create_header(names=header, index=True)
+    def test_create_header_index_array(self):
+        """
+        """
+        header = np.array(['a', 'b', 'c', 'd'], dtype=str)
+        header_out = ['a #1', 'b #2', 'c #3', 'd #4']
+        assert load_dump_util.create_header(names=header, index=True) == header_out
 
 
-def test_create_header_list():
-    """
-    """
-    header = []
-    with pytest.raises(IOError):
-        dump_util.create_header(names=header, index=True)
+    def test_create_header_array_empty(self):
+        """
+        """
+        header = np.array([], dtype=str)
+        with pytest.raises(IOError):
+            load_dump_util.create_header(names=header, index=True)
 
 
-def test_create_header_list_vert():
-    """
-    """
-    header = ['a', 'b', 'c', 'd']
-    assert dump_util.create_header(names=header, index=False) == header
+    def test_create_header_list_empty(self):
+        """
+        """
+        header = []
+        with pytest.raises(IOError):
+            load_dump_util.create_header(names=header, index=True)
 
 
-def test_create_header_index_list():
-    """
-    """
-    header = ['a', 'b', 'c', 'd']
-    header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-    assert dump_util.create_header(names=header, index=True) == header_out
+class TestDumpFile:
+    def test_dump_file_empty(self, tmpdir):
+        """
+        """
+        data = pd.DataFrame({
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_empty')
+        with pytest.raises(IOError):
+            load_dump_util.dump_file(
+                file_name=output_file,
+                data=data,
+                header=None,
+                vertical=True,
+                )
+
+
+    def test_dump_file_four(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=True,
+            )
+        load_data = load_dump_util.load_file(file_name=output_file)
+        assert np.array_equal(load_data.values, data.values)
+
+
+    def test_dump_file_single(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=True,
+            )
+        load_data = load_dump_util.load_file(file_name=output_file)
+        assert np.array_equal(load_data.values, data.values)
+
+
+    def test_dump_file_four_hor(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four_hor')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=False,
+            )
+        load_data = load_dump_util.load_file(file_name=output_file)
+        assert np.array_equal(load_data.values, data.values)
+
+
+    def test_dump_file_single_hor(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single_hor')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=False,
+            )
+        load_data = load_dump_util.load_file(file_name=output_file)
+        assert np.array_equal(load_data.values, data.values)
+
+
+    def test_dump_file_four_header(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=data.keys(),
+            vertical=True,
+            )
+        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=4).equals(data)
+
+
+    def test_dump_file_single_header(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=data.keys(),
+            vertical=True,
+            )
+        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+
+
+    def test_dump_file_four_hor_header(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four_hor')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=False,
+            )
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=data.keys(),
+            vertical=False,
+            )
+        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+
+
+    def test_dump_file_single_hor_header(self, tmpdir):
+        """
+        """
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single_hor')
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=None,
+            vertical=False,
+            )
+        load_dump_util.dump_file(
+            file_name=output_file,
+            data=data,
+            header=data.keys(),
+            vertical=False,
+            )
+        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)

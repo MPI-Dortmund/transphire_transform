@@ -25,9 +25,10 @@ SOFTWARE.
 
 from typing import List, Tuple
 import pandas as pd
+from . import load_dump_util
 
 
-def load_header(file_name: str) -> Tuple[List[str], int]:
+def load_star_header(file_name: str) -> Tuple[List[str], int]:
     """
     Load the header information.
 
@@ -72,11 +73,6 @@ def load_star(file_name: str) -> pd.DataFrame:
     skip_index: int
     star_data: pd.DataFrame
 
-    header_names, skip_index = load_header(file_name=file_name)
-    star_data = pd.read_csv(
-        file_name,
-        delim_whitespace=True,
-        names=header_names,
-        skiprows=skip_index
-        )
+    header_names, skip_index = load_star_header(file_name=file_name)
+    star_data = load_dump_util.load_file(file_name, names=header_names, skiprows=skip_index)
     return star_data
