@@ -24,7 +24,7 @@ SOFTWARE.
 
 
 from typing import List, Tuple
-import pandas as pd
+import pandas as pd # type: ignore
 from . import load_dump_util
 
 

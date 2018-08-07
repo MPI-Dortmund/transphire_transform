@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import os
-import setuptools
+import setuptools # type: ignore
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 

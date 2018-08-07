@@ -14,7 +14,7 @@ function my_mypy {
     for name in "${file_names[@]}"
     do
         echo ${name}
-        mypy --ignore-missing-import ${name}
+        mypy ${name}
         if [[ ${?} != 0 ]]
         then
             error=true
