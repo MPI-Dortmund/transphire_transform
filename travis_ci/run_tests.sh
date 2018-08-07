@@ -90,5 +90,14 @@ function my_pytest {
     return ${?}
 }
 
-my_${1}
-exit ${?}
+if [[ ${1} = 'all' ]]
+then
+    names=('pytest' 'mypy' 'pylint' 'pyflakes')
+    for name in "${names[@]}"
+    do
+        my_${name}
+    done
+else
+        my_${1}
+        exit ${?}
+fi
