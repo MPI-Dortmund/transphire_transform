@@ -23,6 +23,7 @@ SOFTWARE.
 """
 from typing import List, Optional, Dict, Any
 import pandas as pd # type: ignore
+from . import star
 
 
 def create_header(names: List[str], index: bool) -> List[str]:
@@ -121,7 +122,7 @@ def load_file(
     return star_data
 
 
-def conversion_dict(export_name):
+def conversion_dict(export_name: str) -> Dict[str, str]:
     """
     Create a dictionary that converts internal keys to the outside world.
 
@@ -131,4 +132,6 @@ def conversion_dict(export_name):
     Returns:
     Dictionary for hte conversion
     """
-    pass
+    data_dict: Dict[str, Dict[str, str]] = {}
+
+    return data_dict[export_name]
