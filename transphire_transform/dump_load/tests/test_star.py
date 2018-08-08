@@ -26,8 +26,7 @@ SOFTWARE.
 import pytest
 import pandas as pd
 import numpy as np
-from .. import dump_star
-from .. import load_star
+from .. import star
 
 
 OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
@@ -55,7 +54,7 @@ class TestStarHeader:
             '_pipeTest4 #4',
             ]
 
-        assert dump_star.create_star_header(names=header_names) == expected_output
+        assert star.create_star_header(names=header_names) == expected_output
 
 
     def test_create_star_header_four_array(self):
@@ -79,10 +78,10 @@ class TestStarHeader:
             '_pipeTest4 #4',
             ]
 
-        assert dump_star.create_star_header(names=header_names) == expected_output
+        assert star.create_star_header(names=header_names) == expected_output
 
 
-    def test_create_star_header_single_list(star):
+    def test_create_star_header_single_list(self):
         """
         """
         header_names = [
@@ -97,10 +96,10 @@ class TestStarHeader:
             '_rlnTest1 #1',
             ]
 
-        assert dump_star.create_star_header(names=header_names) == expected_output
+        assert star.create_star_header(names=header_names) == expected_output
 
 
-    def test_create_star_header_single_array(star):
+    def test_create_star_header_single_array(self):
         """
         """
         header_names = np.array([
@@ -115,7 +114,7 @@ class TestStarHeader:
             '_rlnTest1 #1',
             ]
 
-        assert dump_star.create_star_header(names=header_names) == expected_output
+        assert star.create_star_header(names=header_names) == expected_output
 
 
 class TestDumpStar:
@@ -134,8 +133,8 @@ class TestDumpStar:
             })
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
-        dump_star.dump_star(file_name=output_file, data=data)
-        assert load_star.load_star(file_name=output_file).equals(data)
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star(file_name=output_file).equals(data)
 
 
     def test_dump_star_single(self, tmpdir):
@@ -147,8 +146,8 @@ class TestDumpStar:
             })
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single.star')
-        dump_star.dump_star(file_name=output_file, data=data)
-        assert load_star.load_star(file_name=output_file).equals(data)
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star(file_name=output_file).equals(data)
 
 
     def test_dump_star_single_empty(self, tmpdir):
@@ -159,4 +158,81 @@ class TestDumpStar:
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single_empty.star')
         with pytest.raises(IOError):
-            dump_star.dump_star(file_name=output_file, data=data)
+            star.dump_star(file_name=output_file, data=data)
+
+
+class TestLoadStarHeader:
+    def test_load_star_header_single(self, tmpdir):
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_header_single.star')
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star_header(file_name=output_file) == (data.keys().tolist(), 5)
+
+
+    def test_load_star_header_four(self, tmpdir):
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_header_four.star')
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star_header(file_name=output_file) == (data.keys().tolist(), 8)
+
+
+class TestLoadStar:
+    def test_load_star_single(self, tmpdir):
+        data_1 = np.arange(4)
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            })
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_single.star')
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star(file_name=output_file).equals(data)
+
+
+    def test_load_star_four(self, tmpdir):
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnTest1': data_1,
+            '_rlnTest2': data_2,
+            '_rlnTest3': data_3,
+            '_pipeTest4': data_4,
+            })
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_four.star')
+        star.dump_star(file_name=output_file, data=data)
+        assert star.load_star(file_name=output_file).equals(data)
+
+
+    def test_load_star_single_empty(self, tmpdir):
+        """
+        """
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_single_empty.star')
+        with open(output_file, 'w'):
+            pass
+        with pytest.raises(IOError):
+            star.load_star(file_name=output_file)
+
+
+class TestHeaderNames:
+    def test_get_relion_keys(self):
+        """
+        """
+        keys = star.get_relion_keys(version=2)
+        assert '_rlnMicrographName' in keys

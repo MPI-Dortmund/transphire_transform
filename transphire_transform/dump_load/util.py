@@ -119,3 +119,16 @@ def load_file(
         **kwargs
         )
     return star_data
+
+
+def conversion_dict(export_name):
+    """
+    Create a dictionary that converts internal keys to the outside world.
+
+    Arguments:
+    export_name - Specify output
+
+    Returns:
+    Dictionary for hte conversion
+    """
+    pass
