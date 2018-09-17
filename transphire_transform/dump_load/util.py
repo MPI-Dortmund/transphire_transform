@@ -111,7 +111,7 @@ def load_file(
     Returns:
     Pandas dataframe containing the data
     """
-    star_data = pd.read_csv(
+    load_data = pd.read_csv(
         file_name,
         header=header,
         names=names,
@@ -119,7 +119,7 @@ def load_file(
         delim_whitespace=delim_whitespace,
         **kwargs
         )
-    return star_data
+    return load_data
 
 
 def conversion_dict(export_name: str) -> Dict[str, str]:
