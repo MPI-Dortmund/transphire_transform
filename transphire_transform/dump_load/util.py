@@ -138,21 +138,8 @@ def import_keys(input_file: str) -> Tuple[str, ...]:
         lines: List[str] = read.readlines()
     for line in lines:
         if line.strip():
-            key_list.append(line.split('#')[0].strip())
+            key = line.split('#')[0].strip()
+            assert ' ' not in key, f'{key} is not allowed to contain whitespaces!'
+            key_list.append(key)
 
     return tuple(key_list)
-
-
-def conversion_dict(export_name: str) -> Dict[str, str]:
-    """
-    Create a dictionary that converts internal keys to the outside world.
-
-    Arguments:
-    export_name - Specify output
-
-    Returns:
-    Dictionary for hte conversion
-    """
-    data_dict: Dict[str, Dict[str, str]] = {}
-
-    return data_dict[export_name]

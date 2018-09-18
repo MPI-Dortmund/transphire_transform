@@ -284,6 +284,19 @@ class TestImportKeys:
         imported_keys = util.import_keys(output_file)
         assert keys == imported_keys
 
+    def test_import_keys_filled_file_multi_hastag_should_work(self, tmpdir):
+        """
+        """
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_filled_file_multi_hastag_should_work')
+        keys = ('test_a', 'test_b', 'test_c')
+        suffix = ('test', 'test2', 'test3')
+        with open(output_file, 'w') as w:
+            for key, suf in zip(keys, suffix):
+                w.write(f'{key} # TEST1 # {suf}\n')
+
+        imported_keys = util.import_keys(output_file)
+        assert keys == imported_keys
+
     def test_import_keys_empty_file_should_work(self, tmpdir):
         """
         """
@@ -291,15 +304,22 @@ class TestImportKeys:
         keys = ()
         suffix = ()
         with open(output_file, 'w') as w:
-            for key, suf in zip(keys, suffix):
-                w.write(f'{key} # {suf}\n')
+            pass
 
         imported_keys = util.import_keys(output_file)
         assert keys == imported_keys
 
-class TestConversionDict:
-    def test_conversion_dict_relion(self):
+    def test_import_keys_contains_whitespace_should_raise_AssertError(self, tmpdir):
         """
         """
-        conversion_dict = util.conversion_dict(export_name='relion')
-        assert '_rlnMicrographName' in conversion_dict
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_contains_whitespace_should_raise_AssertError')
+        keys = ()
+        suffix = ()
+        keys = ('test_a', 'test_b', 'test_c')
+        suffix = ('test', 'test2', 'test3')
+        with open(output_file, 'w') as w:
+            for key, suf in zip(keys, suffix):
+                w.write(f'{key} TEST1 # {suf}\n')
+
+        with pytest.raises(AssertionError):
+            util.import_keys(output_file)
