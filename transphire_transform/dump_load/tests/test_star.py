@@ -231,25 +231,6 @@ class TestLoadStar:
 
 
 class TestHeaderNames:
-    def test_keys_relion_2(self):
-        """
-        """
-        keys = star.keys_relion_2()
-        assert '_rlnMicrographName' in keys
-
-
-    def test_keys_relion_2_istuple(self):
-        """
-        """
-        keys = star.keys_relion_2()
-        assert isinstance(keys, tuple)
-
-
-    def test_keys_relion_2_len(self):
-        """
-        """
-        keys = star.keys_relion_2()
-        assert len(keys) == 295
 
 
     def test_get_relion_keys_version2(self):
@@ -271,27 +252,6 @@ class TestHeaderNames:
         """
         keys = star.get_relion_keys(version=2)
         assert len(keys) == 295
-
-
-    def test_keys_relion_3(self):
-        """
-        """
-        keys = star.keys_relion_3()
-        assert '_rlnMicrographName' in keys
-
-
-    def test_keys_relion_3_istuple(self):
-        """
-        """
-        keys = star.keys_relion_3()
-        assert isinstance(keys, tuple)
-
-
-    def test_keys_relion_3_len(self):
-        """
-        """
-        keys = star.keys_relion_3()
-        assert len(keys) == 342
 
 
     def test_get_relion_keys_version3(self):
