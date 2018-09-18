@@ -24,7 +24,6 @@ SOFTWARE.
 
 from typing import List, Optional, Dict, Any, Tuple
 import pandas as pd # type: ignore
-from . import star
 
 
 def create_header(names: List[str], index: bool) -> List[str]:
@@ -125,7 +124,7 @@ def load_file(
 
 def import_keys(input_file: str) -> Tuple[str, ...]:
     """
-    Import 
+    Import
 
     Arguments:
     input_file - File path to the file containing the keys

@@ -129,16 +129,17 @@ def get_relion_keys(version: int) -> Tuple[str, ...]:
     Returns:
     Tuple of keys
     """
+    input_file: str
     keys_tuple: Tuple[str, ...]
     if version == 2:
-        input_file: str = os.path.join(
+        input_file = os.path.join(
             FILE_DIRECTORY,
             'keys',
             'relion_keys_2.txt'
             )
         keys_tuple = util.import_keys(input_file)
     elif version == 3:
-        input_file: str = os.path.join(
+        input_file = os.path.join(
             FILE_DIRECTORY,
             'keys',
             'relion_keys_3.txt'
