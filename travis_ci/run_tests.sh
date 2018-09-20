@@ -1,5 +1,5 @@
 function find_files {
-    file_names=$(find . -name '*.py' | grep --invert-match 'test' | grep --invert-match '__init__')
+    file_names=$(find . -name '*.py' | grep --invert-match 'test')
     echo ${file_names}
 }
 
@@ -90,7 +90,7 @@ function my_pytest {
     return ${?}
 }
 
-if [[ ${1} = 'all' ]]
+if [[ -z ${1} ]]
 then
     names=('pytest' 'mypy' 'pylint' 'pyflakes')
     for name in "${names[@]}"

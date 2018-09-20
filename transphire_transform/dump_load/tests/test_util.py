@@ -25,7 +25,7 @@ SOFTWARE.
 import numpy as np
 import pandas as pd
 import pytest
-from .. import load_dump_util
+from .. import util
 
 
 OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_LOAD_DUMP_UTIL'
@@ -36,7 +36,7 @@ class TestCreateHeader:
         """
         """
         header = ['a', 'b', 'c', 'd']
-        assert load_dump_util.create_header(names=header, index=False) == header
+        assert util.create_header(names=header, index=False) == header
 
 
     def test_create_header_index_list(self):
@@ -44,14 +44,14 @@ class TestCreateHeader:
         """
         header = ['a', 'b', 'c', 'd']
         header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-        assert load_dump_util.create_header(names=header, index=True) == header_out
+        assert util.create_header(names=header, index=True) == header_out
 
 
     def test_create_header_array(self):
         """
         """
         header = np.array(['a', 'b', 'c', 'd'], dtype=str)
-        assert load_dump_util.create_header(names=header, index=False) == header.tolist()
+        assert util.create_header(names=header, index=False) == header.tolist()
 
 
     def test_create_header_index_array(self):
@@ -59,7 +59,7 @@ class TestCreateHeader:
         """
         header = np.array(['a', 'b', 'c', 'd'], dtype=str)
         header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-        assert load_dump_util.create_header(names=header, index=True) == header_out
+        assert util.create_header(names=header, index=True) == header_out
 
 
     def test_create_header_array_empty(self):
@@ -67,7 +67,7 @@ class TestCreateHeader:
         """
         header = np.array([], dtype=str)
         with pytest.raises(IOError):
-            load_dump_util.create_header(names=header, index=True)
+            util.create_header(names=header, index=True)
 
 
     def test_create_header_list_empty(self):
@@ -75,7 +75,7 @@ class TestCreateHeader:
         """
         header = []
         with pytest.raises(IOError):
-            load_dump_util.create_header(names=header, index=True)
+            util.create_header(names=header, index=True)
 
 
 class TestDumpFile:
@@ -86,7 +86,7 @@ class TestDumpFile:
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_empty')
         with pytest.raises(IOError):
-            load_dump_util.dump_file(
+            util.dump_file(
                 file_name=output_file,
                 data=data,
                 header=None,
@@ -108,13 +108,13 @@ class TestDumpFile:
             '_pipeTest4': data_4,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=True,
             )
-        load_data = load_dump_util.load_file(file_name=output_file)
+        load_data = util.load_file(file_name=output_file)
         assert np.array_equal(load_data.values, data.values)
 
 
@@ -126,13 +126,13 @@ class TestDumpFile:
             '_rlnTest1': data_1,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=True,
             )
-        load_data = load_dump_util.load_file(file_name=output_file)
+        load_data = util.load_file(file_name=output_file)
         assert np.array_equal(load_data.values, data.values)
 
 
@@ -150,13 +150,13 @@ class TestDumpFile:
             '_pipeTest4': data_4,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four_hor')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=False,
             )
-        load_data = load_dump_util.load_file(file_name=output_file)
+        load_data = util.load_file(file_name=output_file)
         assert np.array_equal(load_data.values, data.values)
 
 
@@ -168,13 +168,13 @@ class TestDumpFile:
             '_rlnTest1': data_1,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single_hor')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=False,
             )
-        load_data = load_dump_util.load_file(file_name=output_file)
+        load_data = util.load_file(file_name=output_file)
         assert np.array_equal(load_data.values, data.values)
 
 
@@ -192,13 +192,13 @@ class TestDumpFile:
             '_pipeTest4': data_4,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=data.keys(),
             vertical=True,
             )
-        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=4).equals(data)
+        assert util.load_file(file_name=output_file, names=data.keys(), skiprows=4).equals(data)
 
 
     def test_dump_file_single_header(self, tmpdir):
@@ -209,13 +209,13 @@ class TestDumpFile:
             '_rlnTest1': data_1,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=data.keys(),
             vertical=True,
             )
-        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+        assert util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
 
 
     def test_dump_file_four_hor_header(self, tmpdir):
@@ -232,19 +232,19 @@ class TestDumpFile:
             '_pipeTest4': data_4,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_four_hor')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=False,
             )
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=data.keys(),
             vertical=False,
             )
-        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+        assert util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
 
 
     def test_dump_file_single_hor_header(self, tmpdir):
@@ -255,16 +255,71 @@ class TestDumpFile:
             '_rlnTest1': data_1,
             })
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_file_single_hor')
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=None,
             vertical=False,
             )
-        load_dump_util.dump_file(
+        util.dump_file(
             file_name=output_file,
             data=data,
             header=data.keys(),
             vertical=False,
             )
-        assert load_dump_util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+        assert util.load_file(file_name=output_file, names=data.keys(), skiprows=1).equals(data)
+
+class TestImportKeys:
+
+    def test_import_keys_filled_file_should_work(self, tmpdir):
+        """
+        """
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_filled_file_should_work')
+        keys = ('test_a', 'test_b', 'test_c')
+        suffix = ('test', 'test2', 'test3')
+        with open(output_file, 'w') as w:
+            for key, suf in zip(keys, suffix):
+                w.write(f'{key} # {suf}\n')
+
+        imported_keys = util.import_keys(output_file)
+        assert keys == imported_keys
+
+    def test_import_keys_filled_file_multi_hastag_should_work(self, tmpdir):
+        """
+        """
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_filled_file_multi_hastag_should_work')
+        keys = ('test_a', 'test_b', 'test_c')
+        suffix = ('test', 'test2', 'test3')
+        with open(output_file, 'w') as w:
+            for key, suf in zip(keys, suffix):
+                w.write(f'{key} # TEST1 # {suf}\n')
+
+        imported_keys = util.import_keys(output_file)
+        assert keys == imported_keys
+
+    def test_import_keys_empty_file_should_work(self, tmpdir):
+        """
+        """
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_empty_file_should_work')
+        keys = ()
+        suffix = ()
+        with open(output_file, 'w') as w:
+            pass
+
+        imported_keys = util.import_keys(output_file)
+        assert keys == imported_keys
+
+    def test_import_keys_contains_whitespace_should_raise_AssertError(self, tmpdir):
+        """
+        """
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_import_keys_contains_whitespace_should_raise_AssertError')
+        keys = ()
+        suffix = ()
+        keys = ('test_a', 'test_b', 'test_c')
+        suffix = ('test', 'test2', 'test3')
+        with open(output_file, 'w') as w:
+            for key, suf in zip(keys, suffix):
+                w.write(f'{key} TEST1 # {suf}\n')
+
+        with pytest.raises(AssertionError):
+            util.import_keys(output_file)

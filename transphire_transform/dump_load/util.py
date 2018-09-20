@@ -21,7 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import List, Optional, Dict, Any
+
+from typing import List, Optional, Dict, Any, Tuple
 import pandas as pd # type: ignore
 
 
@@ -110,7 +111,7 @@ def load_file(
     Returns:
     Pandas dataframe containing the data
     """
-    star_data = pd.read_csv(
+    load_data = pd.read_csv(
         file_name,
         header=header,
         names=names,
@@ -118,4 +119,26 @@ def load_file(
         delim_whitespace=delim_whitespace,
         **kwargs
         )
-    return star_data
+    return load_data
+
+
+def import_keys(input_file: str) -> Tuple[str, ...]:
+    """
+    Import
+
+    Arguments:
+    input_file - File path to the file containing the keys
+
+    Returns:
+    Tuple of keys
+    """
+    key_list: List[str] = []
+    with open(input_file, 'r') as read:
+        lines: List[str] = read.readlines()
+    for line in lines:
+        if line.strip():
+            key = line.split('#')[0].strip()
+            assert ' ' not in key, f'{key} is not allowed to contain whitespaces!'
+            key_list.append(key)
+
+    return tuple(key_list)
