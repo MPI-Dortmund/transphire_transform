@@ -17,25 +17,52 @@
 """
 
 
+import typing
 import xml.etree.ElementTree as et
 import re
 import warnings
 
 
-def get_key_without_prefix(key):
-    xml_key_pattern = re.compile(r'.*{.*}(.*)')
-    try:
-        return_key = xml_key_pattern.match(key).group(1)
-    except AttributeError:
+def get_key_without_prefix(key: str) -> str:
+    """
+    Return the key of the XML entry by removing trailing and leading whitespaces
+    and underscores.
+
+    Arguments:
+    key - XML key
+
+    Returns:
+    Key without trailing and leading whitespace and underscore
+    """
+    return_key: str
+    xml_key_match: typing.Optional[typing.Match[str]]
+
+    xml_key_match = re.match(r'.*{.*}(.*)', key)
+    if xml_key_match is None:
         return_key = key
+    else:
+        return_key = xml_key_match.group(1)
     return return_key.strip().strip('_')
 
 
-def add_to_dict(data_dict, key, value):
+def add_to_dict(data_dict: typing.Dict[str, str], key: str, value: str) -> None:
+    """
+    Add key, value pair to dictionary.
+    Raise an AttributeError in case the key already exists in the dictionary.
+
+    Arguments:
+    data_dict - Dictionary that needs to be filled
+    key - Key that needs to be added
+    value - Value that needs to be added related to the key
+
+    Returns:
+    None
+    """
     if key.strip() in data_dict:
         raise AttributeError(f'Key: {key} already exists in data_dict!')
     else:
         data_dict[key.strip()] = value.strip()
+    return None
 
 
 def get_all_key_value(node, key, search_keys, data_dict):
