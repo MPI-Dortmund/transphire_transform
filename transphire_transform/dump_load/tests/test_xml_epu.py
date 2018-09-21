@@ -38,7 +38,7 @@ class TestGetAllKeyValue():
         doc2.text = '1.0'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, value, data_dict)
+        xml_epu.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'Dose': '1.0'}
 
@@ -48,7 +48,7 @@ class TestGetAllKeyValue():
         root = et.Element('root')
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, value, data_dict)
+        xml_epu.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {}
 
@@ -67,7 +67,7 @@ class TestGetAllKeyValue():
         doc5.text = '0'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, value, data_dict)
+        xml_epu.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '3'}
 
@@ -82,7 +82,7 @@ class TestGetAllKeyValue():
         doc3.text = '3'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, value, data_dict)
+        xml_epu.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'NumberOffractions': '3', 'FramesPerFraction': '1'}
 
@@ -98,7 +98,7 @@ class TestGetAllKeyValue():
         doc3.text = '3'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, value, data_dict)
+        xml_epu.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {}
 
@@ -117,7 +117,7 @@ class TestGetAllKeyValue():
 
         data_dict = {}
         with pytest.raises(AttributeError):
-            xml_epu.get_all_key_value(root, key, value, data_dict)
+            xml_epu.get_all_key_value(root, key, [value], data_dict)
 
     def test_unequal_key_value_number_should_raise_assertionerror(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -132,7 +132,7 @@ class TestGetAllKeyValue():
 
         data_dict = {}
         with pytest.raises(AssertionError):
-            xml_epu.get_all_key_value(root, key, value, data_dict)
+            xml_epu.get_all_key_value(root, key, [value], data_dict)
 
 
 class TestGetLevel0Xml():
@@ -783,7 +783,7 @@ class TestRecursiveNode():
         level_dict = {
             'key_value': {
                 '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key': \
-                    '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+                    ['{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value']
                 }
             }
         data_dict = {}
@@ -824,7 +824,7 @@ class TestReadXML():
         level_dict = {
             'key_value': {
                 '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key': \
-                    '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+                    ['{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value']
                 },
             'level 0': {
                 '{http://schemas.datacontract.org/2004/07/Fei.SharedObjects}AccelerationVoltage': [],

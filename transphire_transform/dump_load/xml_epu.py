@@ -20,7 +20,6 @@
 import typing
 import xml.etree.ElementTree as et
 import re
-import warnings
 
 
 def get_key_without_prefix(key: str) -> str:
@@ -65,44 +64,163 @@ def add_to_dict(data_dict: typing.Dict[str, str], key: str, value: str) -> None:
     return None
 
 
-def get_all_key_value(node, key, search_keys, data_dict):
-    findall_name_key = key
-    findall_name_value = search_keys
+def get_all_key_value(
+        node: et.Element,
+        key: str,
+        search_keys: typing.List[str],
+        data_dict: typing.Dict[str, str]
+    ) -> None:
+    """
+    Return all the entries that are mapped to an Key:Value pair inside the XML file.
+    Case:
 
-    findall_key = node.findall(findall_name_key)
+    <key>entry_dict</key>
+    <search_key>entry_value</search_key>
+
+    Arguments:
+    node - Node in the xml tree
+    key - Name of the key entry
+    search_keys - Name of the value entry
+    data_dict - Dictionary that contains the XML information
+
+    Returns:
+    None
+    """
+    findall_key: typing.List[et.Element]
+    sub_value_keys_dict: typing.Dict[
+        str,
+        typing.Callable[[et.Element, typing.Dict[str, str]], None]
+        ]
+    child_values: typing.List[et.Element]
+    dose_frac_key: str
+    number_of_frac_key: str
+
+    dose_frac_key = '{http://schemas.datacontract.org/2004/07/Fei.Applications.Common.Omp.Interface}DoseFractions' # pylint: disable=line-too-long
+    number_of_frac_key = '{http://schemas.datacontract.org/2004/07/Fei.Applications.Common.Omp.Interface}NumberOffractions' # pylint: disable=line-too-long
+    sub_value_keys_dict = {
+        dose_frac_key: dose_frac_nested_values,
+        number_of_frac_key: number_frac_nested_values,
+        }
+
+    findall_key = node.findall(key)
     if findall_key:
-        findall_value = node.findall(findall_name_value)
-        assert len(findall_key) == len(findall_value)
-        for key, value in zip(findall_key, findall_value):
-            if value.text:
-                add_to_dict(data_dict, key.text, value.text)
-            else:
-                for child in value:
-                    if child.tag == '{http://schemas.datacontract.org/2004/07/Fei.Applications.Common.Omp.Interface}DoseFractions':
-                        start = None
-                        end = None
-                        for grand_child in child.iter():
-                            if 'StartFrameNumber' in grand_child.tag:
-                                start = grand_child.text.strip()
-                            if 'EndFrameNumber' in grand_child.tag:
-                                end = grand_child.text.strip()
-                            if start and end:
-                                break
-                        frames_per_fraction = str(int(end) - int(start) + 1)
-                        number_of_fractions = str(len(child))
-                    elif child.tag == '{http://schemas.datacontract.org/2004/07/Fei.Applications.Common.Omp.Interface}NumberOffractions':
-                        frames_per_fraction = '1'
-                        number_of_fractions = child.text
-                    else:
-                        warnings.warn(f'Warning: "{child.tag}" not yet known in if-else branches!')
-                        continue
-                    add_to_dict(data_dict, 'NumberOffractions', number_of_fractions)
-                    add_to_dict(data_dict, 'FramesPerFraction', frames_per_fraction)
+        child_values = fill_key_value_dict(
+            findall_key=findall_key,
+            findall_value=node.findall(search_keys[0]),
+            data_dict=data_dict
+            )
+
+        for child in child_values:
+            for grand_child in child:
+                try:
+                    sub_value_keys_dict[grand_child.tag](grand_child, data_dict)
+                except KeyError:
+                    pass
+
     else:
         pass
 
+    return None
 
-def get_level_0_xml(node, key, search_keys, data_dict):
+
+def fill_key_value_dict(
+        findall_key: typing.List[et.Element],
+        findall_value: typing.List[et.Element],
+        data_dict: typing.Dict[str, str],
+    ) -> typing.List[et.Element]:
+    """
+    Fill the dictionary with key value pairs.
+
+    Arguments:
+    findall_key - XML element nodes containing the Keys
+    findall_value - XML element nodes containing the Values
+    data_dict - Dictionary storing the information
+
+    Returns:
+    List of nested value nodes
+    """
+    child_values: typing.List[et.Element]
+
+    assert len(findall_key) == len(findall_value)
+    child_values = []
+    for entry_key, entry_value in zip(findall_key, findall_value):
+        if entry_value.text:
+            assert entry_key.text is not None
+            add_to_dict(data_dict, entry_key.text, entry_value.text)
+        else:
+            child_values.append(entry_value)
+
+    return child_values
+
+
+def dose_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]) -> None:
+    """
+    Return the number of fractions for an Falcon xml file
+
+    Arguments:
+    node - Dictionary storing the information
+    data_dict - Dictionary containin the extracted xml data
+
+    Returns:
+    None
+    """
+    start: typing.Optional[str]
+    end: typing.Optional[str]
+
+    start = None
+    end = None
+    for grand_child in node.iter():
+        if 'StartFrameNumber' in grand_child.tag:
+            start = grand_child.text
+        if 'EndFrameNumber' in grand_child.tag:
+            end = grand_child.text
+        if start and end:
+            break
+
+    if start is not None and end is not None:
+        add_to_dict(data_dict, 'NumberOffractions', str(len(node)))
+        add_to_dict(data_dict, 'FramesPerFraction', str(int(end.strip()) - int(start.strip()) + 1))
+    return None
+
+
+def number_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]) -> None:
+    """
+    Return the number of fractions for an K2 xml file
+
+    Arguments:
+    node - Dictionary storing the information
+    data_dict - Dictionary containin the extracted xml data
+
+    Returns:
+    None
+    """
+    assert node.text is not None
+    add_to_dict(data_dict, 'NumberOffractions', node.text)
+    add_to_dict(data_dict, 'FramesPerFraction', '1')
+    return None
+
+
+def get_level_0_xml(
+        node: et.Element,
+        key: str,
+        search_keys: typing.List[str],
+        data_dict: typing.Dict[str, str]
+    ) -> None:
+    """
+    Return the key/value pair for the xml case
+
+    <key>Value</key>.
+
+    Arguments:
+    node - Node in the xml tree
+    key - Name of the key entry
+    data_dict - Dictionary that contains the XML information
+    **kwargs - Additional kwargs, needed to be here to be consistent with the other functions
+
+    Returns:
+    None
+    """
+    assert not search_keys
     if key == node.tag:
         dict_key = get_key_without_prefix(node.tag)
         if node.text:
@@ -110,45 +228,135 @@ def get_level_0_xml(node, key, search_keys, data_dict):
     else:
         pass
 
+    return None
 
-def get_level_1_xml(node, key, search_keys, data_dict):
+
+def get_level_1_xml(
+        node: et.Element,
+        key: str,
+        search_keys: typing.List[str],
+        data_dict: typing.Dict[str, str]
+    ) -> None:
+    """
+    Return the key/value pair for the xml case
+
+    <key>
+    <subkey>value</subkey>
+    </key>
+
+    Arguments:
+    node - Node in the xml tree
+    key - Name of the key entry
+    data_dict - Dictionary that contains the XML information
+    **kwargs - Additional kwargs, needed to be here to be consistent with the other functions
+
+    Returns:
+    None
+    """
+    search_keys_no_prefix: typing.List[str]
+    key_1: str
+    key_2: str
+    combined_key: str
+
     search_keys_no_prefix = [get_key_without_prefix(search_key) for search_key in search_keys]
     if key == node.tag:
-        key_1 = get_key_without_prefix(node.tag)
+        key_1 = get_key_without_prefix(key)
+
         for child in node:
             key_2 = get_key_without_prefix(child.tag)
             combined_key = '_'.join([key_1, key_2])
+
             for key_check in search_keys_no_prefix:
                 if key_check == key_2:
+                    assert child.text is not None
                     add_to_dict(data_dict, combined_key, child.text)
     else:
         pass
 
+    return None
 
-def get_level_3_xml(node, key, search_keys, data_dict):
-    search_keys_no_prefix = [get_key_without_prefix(search_key) for search_key in search_keys]
+
+def get_level_3_xml(
+        node: et.Element,
+        key: str,
+        search_keys: typing.List[str],
+        data_dict: typing.Dict[str, str]
+    ) -> None:
+    """
+    Return the key/value pair for the xml case
+
+    <key>
+    <subkey_1>
+    <subkey_2>value</subkey_2>
+    </subkey_1>
+    </key>
+
+    Arguments:
+    node - Node in the xml tree
+    key - Name of the key entry
+    data_dict - Dictionary that contains the XML information
+    **kwargs - Additional kwargs, needed to be here to be consistent with the other functions
+
+    Returns:
+    None
+    """
+    search_keys_no_prefix: typing.List[str]
+    key_1: str
+    key_2: str
+    combined_key: str
+    test_tag: str
+    list_key: typing.List[str]
+    list_child: typing.List[et.Element]
+
     if key == node.tag:
+        search_keys_no_prefix = [get_key_without_prefix(search_key) for search_key in search_keys]
+        list_key = []
+        list_child = []
+
         for child in node:
             key_1 = get_key_without_prefix(child.tag)
+
             for grand_child in child:
                 key_2 = get_key_without_prefix(grand_child.tag)
-                key = '_'.join([key_1, key_2])
-                for grand_grand_child in grand_child:
-                    test_tag = get_key_without_prefix(grand_grand_child.tag)
-                    for key_check in search_keys_no_prefix:
-                        if key_check == test_tag:
-                            add_to_dict(data_dict, key, grand_grand_child.text)
+                combined_key = '_'.join([key_1, key_2])
+                list_key.append(combined_key)
+                list_child.append(grand_child)
+
+        assert len(list_key) == len(list_child)
+        for combined_key, child in zip(list_key, list_child):
+            for grand_child in child:
+                test_tag = get_key_without_prefix(grand_child.tag)
+
+                for key_check in search_keys_no_prefix:
+                    if key_check == test_tag:
+                        assert grand_child.text is not None
+                        add_to_dict(data_dict, combined_key, grand_child.text)
     else:
         pass
 
+    return None
 
-def recursive_node(node, data_dict, level_dict, level_func_dict):
+
+def recursive_node(
+        node: et.Element,
+        data_dict: typing.Dict[str, str],
+        level_dict: typing.Dict[str, typing.Dict[str, typing.List[str]]],
+        level_func_dict: typing.Dict[
+            str,
+            typing.Callable[
+                [et.Element, str, typing.List[str], typing.Dict[str, str]],
+                None
+                ]
+            ]
+    ) -> None:
     """
     Find all xml information recursively.
 
     Arguments:
     node - Current node to search
     data_dict - Dictionary containing the extracted data
+    level_dict - Dinctionary containing the searched keys for each level
+    level_func_dict - Dictionary containing the different level functions
 
     Returns:
     None - Dictionary will be modified inplace
@@ -157,10 +365,10 @@ def recursive_node(node, data_dict, level_dict, level_func_dict):
     for level_key, level_value in level_dict.items():
         for key, value in level_value.items():
             level_func_dict[level_key](
-                node=node,
-                key=key,
-                search_keys=value,
-                data_dict=data_dict,
+                node,
+                key,
+                value,
+                data_dict,
                 )
 
     for child in node:
@@ -171,8 +379,33 @@ def recursive_node(node, data_dict, level_dict, level_func_dict):
             level_func_dict=level_func_dict
             )
 
+    return None
 
-def read_xml(file_name, level_dict):
+
+def read_xml(
+        file_name: str,
+        level_dict: typing.Dict[str, typing.Dict[str, typing.List[str]]]
+    ) -> typing.Dict[str, str]:
+    """
+    Extract the xml information from the file.
+
+    Arguments:
+    file_name - Path to the xml file
+    level_dict - Dictionary containin the keys to extract
+
+    Returns:
+    data_dict
+    """
+    level_func_dict: typing.Dict[
+        str,
+        typing.Callable[
+            [et.Element, str, typing.List[str], typing.Dict[str, str]],
+            None
+            ]
+        ]
+    tree: et.ElementTree
+    root: et.Element
+    data_dict: typing.Dict[str, str]
 
     level_func_dict = {
         'key_value': get_all_key_value,
