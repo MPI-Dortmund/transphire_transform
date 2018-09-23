@@ -135,6 +135,247 @@ class TestGetAllKeyValue():
             xml_epu.get_all_key_value(root, key, [value], data_dict)
 
 
+class TestFillKeyValueDict():
+
+    def test_one_key_one_value_should_fill_dict(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+        assert data_dict == {'foo': '1'}
+
+    def test_two_key_two_value_should_fill_dict(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'boo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '2'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+        assert data_dict == {'foo': '1', 'boo': '2'}
+
+    def test_zero_key_zero_value_should_return_empty_dict_dict(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+        assert data_dict == {}
+
+    def test_one_key_two_value_should_raise_assertion_error(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'boo'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+
+        with pytest.raises(AssertionError):
+            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+    def test_two_key_one_value_should_raise_assertion_error(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'boo'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+
+        with pytest.raises(AssertionError):
+            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+    def test_one_empty_key_one_value_should_raise_assertion_error(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        with pytest.raises(AssertionError):
+            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+
+    def test_one_key_one_value_should_return_empty_list(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+        doc2.text = '1'
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        assert xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict) == []
+
+    def test_one_key_one_empty_value_should_return_filled_list(self):
+        key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
+        value = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Value'
+        root = et.Element('root')
+        doc1 = et.SubElement(root, key)
+        doc1.text = 'foo'
+        doc2 = et.SubElement(root, value)
+
+        data_dict = {}
+        findall_key = root.findall(key)
+        findall_value = root.findall(value)
+        assert xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict) == [doc2]
+
+
+class TestDoseFracNestedValues():
+
+    def test_tag_exist_should_fill_dict(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key1)
+        doc1.text = '1'
+        doc2 = et.SubElement(root2, key2)
+        doc2.text = '1'
+
+        data_dict = {}
+        xml_epu.dose_frac_nested_values(root, data_dict)
+
+        assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '1'}
+
+    def test_start_tag_exist_should_not_fill_dict(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key1)
+        doc1.text = '1'
+
+        data_dict = {}
+        xml_epu.dose_frac_nested_values(root, data_dict)
+
+        assert data_dict == {}
+
+    def test_end_tag_exist_should_not_fill_dict(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key2)
+        doc1.text = '1'
+
+        data_dict = {}
+        xml_epu.dose_frac_nested_values(root, data_dict)
+
+        assert data_dict == {}
+
+    def test_start_tag_not_int_should_raise_valueerror(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key1)
+        doc1.text = 's'
+        doc2 = et.SubElement(root2, key2)
+        doc2.text = '1'
+
+        data_dict = {}
+        with pytest.raises(ValueError):
+            xml_epu.dose_frac_nested_values(root, data_dict)
+
+    def test_end_tag_not_int_should_raise_valueerror(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key1)
+        doc1.text = '1'
+        doc2 = et.SubElement(root2, key2)
+        doc2.text = 's'
+
+        data_dict = {}
+        with pytest.raises(ValueError):
+            xml_epu.dose_frac_nested_values(root, data_dict)
+
+    def test_end_and_start_tag_not_int_should_raise_valueerror(self):
+        key1 = 'StartFrameNumber'
+        key2 = 'EndFrameNumber'
+        root = et.Element('root')
+        root2 = et.SubElement(root, 'root2')
+        doc1 = et.SubElement(root2, key1)
+        doc1.text = 'a'
+        doc2 = et.SubElement(root2, key2)
+        doc2.text = 's'
+
+        data_dict = {}
+        with pytest.raises(ValueError):
+            xml_epu.dose_frac_nested_values(root, data_dict)
+
+
+class TestNumberFracNestedValues():
+
+    def test_value_with_text_should_fill_dict(self):
+        root = et.Element('root')
+        root.text = '1'
+
+        data_dict = {}
+        xml_epu.number_frac_nested_values(root, data_dict)
+
+        assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '1'}
+
+    def test_value_without_text_should_raise_assertionError(self):
+        root = et.Element('root')
+
+        data_dict = {}
+        with pytest.raises(AssertionError):
+            xml_epu.number_frac_nested_values(root, data_dict)
+
+    def test_value_no_int_should_raise_valueerror(self):
+        root = et.Element('root')
+        root.text = 's'
+
+        data_dict = {}
+        with pytest.raises(ValueError):
+            xml_epu.number_frac_nested_values(root, data_dict)
+
+
 class TestGetLevel0Xml():
 
     def test_key_exists_should_return_filled_dict(self):
