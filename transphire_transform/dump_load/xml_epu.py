@@ -195,7 +195,7 @@ def number_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]
     None
     """
     assert node.text is not None
-    add_to_dict(data_dict, 'NumberOffractions', node.text)
+    add_to_dict(data_dict, 'NumberOffractions', str(int(node.text.strip())))
     add_to_dict(data_dict, 'FramesPerFraction', '1')
     return None
 
