@@ -23,13 +23,13 @@ SOFTWARE.
 """
 
 import os
-from typing import List, Tuple
+import typing
 import pandas as pd # type: ignore
 from . import util
 
 FILE_DIRECTORY: str = os.path.dirname(os.path.realpath(__file__))
 
-def create_star_header(names: List[str]) -> List[str]:
+def create_star_header(names: typing.List[str]) -> typing.List[str]:
     """
     Create a header for a relion star file.
 
@@ -39,7 +39,7 @@ def create_star_header(names: List[str]) -> List[str]:
     Returns:
     Header string
     """
-    output_list: List[str] = [
+    output_list: typing.List[str] = [
         '',
         'data_',
         '',
@@ -60,7 +60,7 @@ def dump_star(file_name: str, data: pd.DataFrame) -> None:
     Returns:
     None
     """
-    header: List[str] = create_star_header(names=data.keys())
+    header: typing.List[str] = create_star_header(names=data.keys())
     util.dump_file(
         file_name=file_name,
         data=data,
@@ -69,7 +69,7 @@ def dump_star(file_name: str, data: pd.DataFrame) -> None:
         )
 
 
-def load_star_header(file_name: str) -> Tuple[List[str], int]:
+def load_star_header(file_name: str) -> typing.Tuple[typing.List[str], int]:
     """
     Load the header information.
 
@@ -80,7 +80,7 @@ def load_star_header(file_name: str) -> Tuple[List[str], int]:
     List of header names, rows that are occupied by the header.
     """
     start_header: bool = False
-    header_names: List[str] = []
+    header_names: typing.List[str] = []
     idx: int
 
     with open(file_name, 'r') as read:
@@ -110,7 +110,7 @@ def load_star(file_name: str) -> pd.DataFrame:
     Returns:
     Pandas dataframe containing the star file
     """
-    header_names: List[str]
+    header_names: typing.List[str]
     skip_index: int
     star_data: pd.DataFrame
 
@@ -119,7 +119,7 @@ def load_star(file_name: str) -> pd.DataFrame:
     return star_data
 
 
-def get_relion_keys(version: int) -> Tuple[str, ...]:
+def get_relion_keys(version: int) -> typing.Tuple[str, ...]:
     """
     Get the header keys used by the relion version.
 
@@ -130,7 +130,7 @@ def get_relion_keys(version: int) -> Tuple[str, ...]:
     Tuple of keys
     """
     input_file: str
-    keys_tuple: Tuple[str, ...]
+    keys_tuple: typing.Tuple[str, ...]
     if version == 2:
         input_file = os.path.join(
             FILE_DIRECTORY,
