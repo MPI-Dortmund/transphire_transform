@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List, Optional, Dict, Any, Tuple
+import typing
 import pandas as pd # type: ignore
 
 
-def create_header(names: List[str], index: bool) -> List[str]:
+def create_header(names: typing.List[str], index: bool) -> typing.List[str]:
     """
     Create header for output file.
     An IOError is raised, if the output list is empty.
@@ -38,7 +38,7 @@ def create_header(names: List[str], index: bool) -> List[str]:
     Returns:
     List of header entries
     """
-    output_list: List[str] = []
+    output_list: typing.List[str] = []
     if index:
         for idx, name in enumerate(names):
             output_list.append(f'{name} #{idx+1}')
@@ -55,7 +55,7 @@ def create_header(names: List[str], index: bool) -> List[str]:
 def dump_file(
         file_name: str,
         data: pd.DataFrame,
-        header: Optional[List[str]] = None,
+        header: typing.Optional[typing.List[str]] = None,
         vertical: bool = True
     ) -> None:
     """
@@ -91,11 +91,11 @@ def dump_file(
 
 def load_file(
         file_name: str,
-        names: Optional[List[str]] = None,
-        header: Optional[List[int]] = None,
+        names: typing.Optional[typing.List[str]] = None,
+        header: typing.Optional[typing.List[int]] = None,
         skiprows: int = 0,
         delim_whitespace: bool = True,
-        **kwargs: Dict[str, Any]
+        **kwargs: typing.Any
     ) -> pd.DataFrame:
     """
     Load the content of a file.
@@ -122,7 +122,7 @@ def load_file(
     return load_data
 
 
-def import_keys(input_file: str) -> Tuple[str, ...]:
+def import_keys(input_file: str) -> typing.Tuple[str, ...]:
     """
     Import
 
@@ -132,9 +132,9 @@ def import_keys(input_file: str) -> Tuple[str, ...]:
     Returns:
     Tuple of keys
     """
-    key_list: List[str] = []
+    key_list: typing.List[str] = []
     with open(input_file, 'r') as read:
-        lines: List[str] = read.readlines()
+        lines: typing.List[str] = read.readlines()
     for line in lines:
         if line.strip():
             key = line.split('#')[0].strip()
