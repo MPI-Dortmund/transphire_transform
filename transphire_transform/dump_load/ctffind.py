@@ -51,6 +51,26 @@ def get_ctffind4_header_names() -> typing.List[str]:
         ]
 
 
+def get_ctffind4_extract_dict() -> typing.Dict[str, str]:
+    """
+    Returns the extraction dict for the ctffind4 meta information.
+
+    Arguments:
+    None
+
+    Returns:
+    Dictionary with key as key and regular expression as value.
+    """
+    return {
+        'version': r'.*CTFFind version ([^, ]*).*',
+        'micrograph_name': r'.*Input file: ([^ ]*).*',
+        'pixel_size': r'.*Pixel size: ([^ ]*).*',
+        'kv': r'.*acceleration voltage: ([^ ]*).*',
+        'cs': r'.*spherical aberration: ([^ ]*).*',
+        'ac': r'.*amplitude contrast: ([^ ]*).*',
+        }
+
+
 def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
     """
     Import the ctffind information used.
@@ -66,15 +86,9 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
     lines: typing.List[str]
     match: typing.Optional[typing.Match[str]]
     non_string_values: typing.Set[str]
+    extract_dict: typing.Dict[str, str]
 
-    extract_dict = {
-        'version': r'.*CTFFind version ([^, ]*).*',
-        'micrograph_name': r'.*Input file: ([^ ]*).*',
-        'pixel_size': r'.*Pixel size: ([^ ]*).*',
-        'kv': r'.*acceleration voltage: ([^ ]*).*',
-        'cs': r'.*spherical aberration: ([^ ]*).*',
-        'ac': r'.*amplitude contrast: ([^ ]*).*',
-        }
+    extract_dict = get_ctffind4_extract_dict()
     ctffind_meta_data = pd.DataFrame(index=[0], columns=extract_dict.keys())
     with open(file_name, 'r') as read:
         lines = read.readlines()
@@ -110,6 +124,7 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
     header_names: typing.List[str]
     ctffind_data: pd.DataFrame
     ctffind_meta: pd.DataFrame
+    ctffind_combined: pd.DataFrame
 
     header_names = get_ctffind4_header_names()
     ctffind_data = util.load_file(
@@ -118,7 +133,7 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
         skiprows=5,
         usecols=(1, 2, 3, 4, 5, 6)
         )
-    np.degrees(ctffind_data['phase_shift'], out=ctffind_data['phase_shift'])
+    ctffind_data['phase_shift'] = np.degrees(ctffind_data['phase_shift'])
 
     ctffind_meta = get_ctffind4_meta(file_name=file_name)
-    return ctffind_data
+    return pd.concat([ctffind_data, ctffind_meta], axis=1)
