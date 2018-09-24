@@ -95,7 +95,7 @@ def load_file(
         header: typing.Optional[typing.List[int]] = None,
         skiprows: int = 0,
         delim_whitespace: bool = True,
-        **kwargs: typing.Dict[str, typing.Any]
+        **kwargs: typing.Any
     ) -> pd.DataFrame:
     """
     Load the content of a file.

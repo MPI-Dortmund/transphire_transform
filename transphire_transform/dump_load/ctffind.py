@@ -23,9 +23,10 @@ SOFTWARE.
 """
 
 import typing
-import numpy as np
-import pandas as pd # type: ignore
 import re
+
+import numpy as np # type: ignore
+import pandas as pd # type: ignore
 
 from . import util
 
@@ -41,7 +42,7 @@ def get_ctffind4_header_names() -> typing.List[str]:
     List of names
     """
     return [
-        'defcous_u',
+        'defocus_u',
         'defocus_v',
         'astigmatism_angle',
         'phase_shift',
@@ -62,8 +63,9 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
     """
     extract_dict: typing.Dict[str, str]
     ctffind_meta_data: pd.DataFrame
-    lines = typing.List[str]
-    match = typing.Optional[typing.Match[str]]
+    lines: typing.List[str]
+    match: typing.Optional[typing.Match[str]]
+    non_string_values: typing.Set[str]
 
     extract_dict = {
         'version': r'.*CTFFind version ([^, ]*).*',
@@ -73,10 +75,14 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
         'cs': r'.*spherical aberration: ([^ ]*).*',
         'ac': r'.*amplitude contrast: ([^ ]*).*',
         }
-    ctffind_meta_data = pd.DataFrame(index=1, columns=extract_dict.keys())
+    ctffind_meta_data = pd.DataFrame(index=[0], columns=extract_dict.keys())
     with open(file_name, 'r') as read:
         lines = read.readlines()
 
+    non_string_values = set([
+        'micrograph_name',
+        'version'
+        ])
     for line in lines:
         for key, value in extract_dict.items():
             match = re.match(value, line)
@@ -84,7 +90,7 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
                 try:
                     ctffind_meta_data[key] = float(match.group(1))
                 except ValueError:
-                    assert key == 'micrograph_name'
+                    assert key in non_string_values, f'{key}: {match.group(1)}'
                     ctffind_meta_data[key] = match.group(1)
             else:
                 pass
@@ -103,6 +109,7 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
     """
     header_names: typing.List[str]
     ctffind_data: pd.DataFrame
+    ctffind_meta: pd.DataFrame
 
     header_names = get_ctffind4_header_names()
     ctffind_data = util.load_file(
@@ -112,4 +119,6 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
         usecols=(1, 2, 3, 4, 5, 6)
         )
     np.degrees(ctffind_data['phase_shift'], out=ctffind_data['phase_shift'])
+
+    ctffind_meta = get_ctffind4_meta(file_name=file_name)
     return ctffind_data
