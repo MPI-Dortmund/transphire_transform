@@ -118,3 +118,25 @@ def defocus_defocus_diff_to_defocus_u_and_v(
     defocus_v = (20000*defocus - 10000*astigmatism) / 2
     defocus_u = 20000*defocus - defocus_v
     return defocus_u, defocus_v
+
+
+def defocus_u_and_v_to_defocus_defocus_diff(
+        defocus_u: pd.Series,
+        defocus_v: pd.Series
+    ) -> typing.Tuple[pd.Series, pd.Series]:
+    """
+    Calculate the mean defocus and defocus diff value based on the defocus_u and defocus_v value.
+
+    Arguments:
+    defocus_u - Defocus U value
+    defocus_v - Defocus V value
+
+    Returns:
+    Mean defocus and astigmatism_amplitude
+    """
+    defocus: pd.Series
+    astigmatism: pd.Series
+
+    defocus = (defocus_u + defocus_v) / 20000
+    astigmatism = (defocus_u - defocus_v) / 10000
+    return defocus, astigmatism

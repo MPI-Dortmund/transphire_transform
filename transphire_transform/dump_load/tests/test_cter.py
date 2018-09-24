@@ -136,9 +136,28 @@ class TestDefocusDefocusDiffToDefocuUAndV:
         assert def_u == def_v
 
     def test_values_should_return_correct_defocus_u(self):
-        def_u, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
+        def_u, _ = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
         assert def_u == 21000
 
     def test_values_should_return_correct_defocus_v(self):
-        def_u, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
+        _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
         assert def_v == 20000
+
+
+class TestDefocuUAndVToDefocusDefocusDiff:
+
+    def test_defocus_u_2_um_defocus_v_2_um_should_return_20000_angstrom(self):
+        defocus, _ = cter.defocus_u_and_v_to_defocus_defocus_diff(20000, 20000)
+        assert defocus == 2
+
+    def test_zero_astigmatism_should_return_same_values(self):
+        _, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(20000, 20000)
+        assert astigmatism == 0
+
+    def test_values_should_return_correct_defocus_u(self):
+        defocus, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(21000, 20000)
+        assert defocus == 2.05
+
+    def test_values_should_return_correct_defocus_v(self):
+        defocus, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(21000, 20000)
+        assert astigmatism == 0.1
