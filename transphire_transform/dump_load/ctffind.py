@@ -86,7 +86,6 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
     lines: typing.List[str]
     match: typing.Optional[typing.Match[str]]
     non_string_values: typing.Set[str]
-    extract_dict: typing.Dict[str, str]
 
     extract_dict = get_ctffind4_extract_dict()
     ctffind_meta_data = pd.DataFrame(index=[0], columns=extract_dict.keys())
@@ -124,7 +123,6 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
     header_names: typing.List[str]
     ctffind_data: pd.DataFrame
     ctffind_meta: pd.DataFrame
-    ctffind_combined: pd.DataFrame
 
     header_names = get_ctffind4_header_names()
     ctffind_data = util.load_file(
