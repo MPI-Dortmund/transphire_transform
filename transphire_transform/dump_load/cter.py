@@ -97,7 +97,10 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
     return pd.concat([defocus_data, cter_data_dropped], axis=1)
 
 
-def defocus_defocus_diff_to_defocus_u_and_v(defocus, astigmatism):
+def defocus_defocus_diff_to_defocus_u_and_v(
+        defocus: pd.Series,
+        astigmatism: pd.Series
+    ) -> typing.Tuple[pd.Series, pd.Series]:
     """
     Calculate the defocus_u and defocus_v value based on the average defocus
     and the difference between the two values.
@@ -109,6 +112,9 @@ def defocus_defocus_diff_to_defocus_u_and_v(defocus, astigmatism):
     Returns:
     Defocus_U and Defocus_V
     """
+    defocus_u: pd.Series
+    defocus_v: pd.Series
+
     defocus_v = (20000*defocus - 10000*astigmatism) / 2
     defocus_u = 20000*defocus - defocus_v
     return defocus_u, defocus_v
