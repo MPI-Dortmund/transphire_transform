@@ -128,7 +128,7 @@ class TestLoadCterV10:
 class TestDefocusDefocusDiffToDefocuUAndV:
 
     def test_defocus_2_um_zero_astigmatism_should_return_20000_angstrom(self):
-        def_u, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2, 0)
+        def_u, _ = cter.defocus_defocus_diff_to_defocus_u_and_v(2, 0)
         assert def_u == 20000
 
     def test_zero_astigmatism_should_return_same_values(self):
@@ -142,6 +142,20 @@ class TestDefocusDefocusDiffToDefocuUAndV:
     def test_values_should_return_correct_defocus_v(self):
         _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
         assert def_v == 20000
+
+    def test_multi_input_should_return_multi_output_defocus_u(self):
+        def_u, _ = cter.defocus_defocus_diff_to_defocus_u_and_v(
+            pd.Series([2, 2.05]),
+            pd.Series([0, 0.1])
+            )
+        assert def_u.equals(pd.Series([20000, 21000], dtype=float))
+
+    def test_multi_input_should_return_multi_output_defocus_v(self):
+        _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(
+            pd.Series([2, 2.05]),
+            pd.Series([0, 0.1])
+            )
+        assert def_v.equals(pd.Series([20000, 20000], dtype=float))
 
 
 class TestDefocuUAndVToDefocusDefocusDiff:
@@ -161,3 +175,17 @@ class TestDefocuUAndVToDefocusDefocusDiff:
     def test_values_should_return_correct_defocus_v(self):
         defocus, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(21000, 20000)
         assert astigmatism == 0.1
+
+    def test_multi_input_should_return_multi_output_defocus(self):
+        defocus, _ = cter.defocus_u_and_v_to_defocus_defocus_diff(
+            pd.Series([20000, 21000]),
+            pd.Series([20000, 20000])
+            )
+        assert defocus.equals(pd.Series([2, 2.05], dtype=float))
+
+    def test_multi_input_should_return_multi_output_astigmatism(self):
+        _, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(
+            pd.Series([20000, 21000]),
+            pd.Series([20000, 20000])
+            )
+        assert astigmatism.equals(pd.Series([0, 0.1], dtype=float))
