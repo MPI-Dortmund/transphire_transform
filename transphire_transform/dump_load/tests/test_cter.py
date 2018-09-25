@@ -31,6 +31,7 @@ import pytest
 from .. import cter
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
 
 
 class TestGetCterV10HeaderNames:
@@ -65,8 +66,185 @@ class TestGetCterV10HeaderNames:
 
 class TestLoadCterV10:
 
+    def test_correct_multiline_file_should_return_filled_data_frame(self):
+        file_name = os.path.join(THIS_DIR, 'cter_v1_0_multiline.txt')
+        return_frame = cter.load_cter_v1_0(file_name=file_name)
+
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [[
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]] * 2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        assert data_frame.equals(return_frame.round(7))
+
     def test_correct_file_should_return_filled_data_frame(self):
         file_name = os.path.join(THIS_DIR, 'cter_v1_0.txt')
+        return_frame = cter.load_cter_v1_0(file_name=file_name)
+
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+
+        assert data_frame.equals(return_frame.round(7))
+
+    def test_correct_file_low_angle_should_return_filled_data_frame(self):
+        file_name = os.path.join(THIS_DIR, 'cter_v1_0_low_angle.txt')
+        return_frame = cter.load_cter_v1_0(file_name=file_name)
+
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+
+        assert data_frame.equals(return_frame.round(7))
+
+    def test_correct_file_high_angle_should_return_filled_data_frame(self):
+        file_name = os.path.join(THIS_DIR, 'cter_v1_0_high_angle.txt')
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
@@ -189,3 +367,511 @@ class TestDefocuUAndVToDefocusDefocusDiff:
             pd.Series([20000, 20000])
             )
         assert astigmatism.equals(pd.Series([0, 0.1], dtype=float))
+
+
+class TestDumpCterV10:
+
+    def test_valid_cter_data_should_create_partres_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_should_create_partres_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+        assert os.path.exists(output_file)
+
+    def test_valid_cter_data_large_angle_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_large_angle_should_create_correct_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435+720,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0010212,
+            0.0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]]
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data
+
+    def test_valid_cter_data_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_should_create_correct_partres_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0010212,
+            0.0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]]
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data
+
+    def test_valid_multiline_cter_data_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_multiline_cter_data_should_create_correct_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [[
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]]*2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0010212,
+            0.0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]] * 2
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data
+
+    def test_valid_ctffind_data_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_ctffind_data_should_create_correct_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'astigmatism_angle',
+            'ac',
+            'phase_shift',
+            'resolution_limit',
+            'micrograph_name'
+            )
+        data = [
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            19.435,
+            0.1,
+            0,
+            3.15,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            3.15,
+            2.28,
+            0.0,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]]
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data
+
+    def test_valid_multiline_cter_data_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_multiline_cter_data_should_create_correct_file.star')
+        columns = (
+            'defocus_u',
+            'defocus_v',
+            'cs',
+            'kv',
+            'pixel_size',
+            'b_factor',
+            'total_ac',
+            'astigmatism_angle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'spare_1',
+            'spare_2',
+            'ac',
+            'phase_shift',
+            'micrograph_name'
+            )
+        data = [[
+            22862.365,
+            22257.635,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]]*2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+        cter.dump_cter_v1_0(output_file, data_frame)
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0010212,
+            0.0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]] * 2
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data
+
+
