@@ -24,7 +24,7 @@ SOFTWARE.
 
 import typing
 
-import numpy as np
+import numpy as np # type: ignore
 import pandas as pd # type: ignore
 
 from . import util
@@ -89,15 +89,19 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
     cter_data['total_ac'] = cter_data['total_ac'] / 100
     cter_data['astigmatism_angle'] = 45 - cter_data['astigmatism_angle']
 
+    cter_data['nyquist'] = 1 / cter_data['nyquist']
+    cter_data['resolution_limit'] = 1 / cter_data['resolution_limit']
+    cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
+
     mask = (cter_data['astigmatism_angle'] < 0)
     while mask.any():
         cter_data.loc[mask, 'astigmatism_angle'] += 180
         mask = (cter_data['astigmatism_angle'] < 0)
 
-    mask = (cter_data['astigmatism_angle'] >= 0)
+    mask = (cter_data['astigmatism_angle'] >= 180)
     while mask.any():
         cter_data.loc[mask, 'astigmatism_angle'] -= 180
-        mask = (cter_data['astigmatism_angle'] >= 0)
+        mask = (cter_data['astigmatism_angle'] >= 180)
 
     defocus_data = pd.DataFrame(index=range(len(cter_data)), columns=('defocus_u', 'defocus_v'))
     defocus_data['defocus_u'], defocus_data['defocus_v'] = defocus_defocus_diff_to_defocus_u_and_v(
@@ -120,8 +124,8 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
     Returns:
     None
     """
-    cter_header_names: typing.List[str] 
-    cter_valid_list: typing.List[str] 
+    cter_header_names: typing.List[str]
+    cter_valid_list: typing.List[str]
     defocus_frame: pd.DataFrame
     output_frame: pd.DataFrame
     mask: pd.Series
@@ -133,21 +137,21 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
             cter_valid_list.append(column_name)
 
     defocus_frame = pd.DataFrame(
-            index=range(len(cter_data)),
-            columns=('defocus', 'astigmatism_amplitude')
-            )
+        index=range(len(cter_data)),
+        columns=('defocus', 'astigmatism_amplitude')
+        )
 
     defocus_frame['defocus'], defocus_frame['astigmatism_amplitude'] = \
-            defocus_u_and_v_to_defocus_defocus_diff(
-                cter_data['defocus_u'],
-                cter_data['defocus_v']
-                )
+        defocus_u_and_v_to_defocus_defocus_diff(
+            cter_data['defocus_u'],
+            cter_data['defocus_v']
+            )
 
     output_frame = pd.DataFrame(
-            0,
-            index=range(len(cter_data)),
-            columns=cter_header_names
-            )
+        0,
+        index=range(len(cter_data)),
+        columns=cter_header_names
+        )
 
     for data_frame in [cter_data, defocus_frame]:
         for header_name in cter_header_names:
@@ -164,15 +168,29 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
         output_frame.loc[mask, 'astigmatism_angle'] += 180
         mask = (output_frame['astigmatism_angle'] < 0)
 
-    mask = (output_frame['astigmatism_angle'] >= 0)
+    mask = (output_frame['astigmatism_angle'] >= 180)
     while mask.any():
         output_frame.loc[mask, 'astigmatism_angle'] -= 180
-        mask = (output_frame['astigmatism_angle'] >= 0)
+        mask = (output_frame['astigmatism_angle'] >= 180)
 
     if 'total_ac' in cter_valid_list:
         output_frame['total_ac'] = output_frame['total_ac'] * 100
     else:
-        pass
+        amp_cont_angle = amplitude_contrast_to_angle(output_frame['ac'])
+        total_phase = amp_cont_angle + output_frame['phase_shift']
+        output_frame['total_ac'] = angle_to_amplitude_contrast(total_phase)
+
+    if 'nyquist' in cter_valid_list:
+        output_frame['nyquist'] = 1 / output_frame['nyquist']
+    else:
+        output_frame['nyquist'] = 1 / (2 * output_frame['pixel_size'])
+
+    if 'resolution_limit_defocus' in cter_valid_list:
+        output_frame['resolution_limit_defocus'] = 1 / output_frame['resolution_limit_defocus']
+    else:
+        output_frame['resolution_limit_defocus'] = 1 / output_frame['resolution_limit']
+
+    output_frame['resolution_limit'] = 1 / output_frame['resolution_limit']
 
     util.dump_file(file_name=file_name, data=output_frame.round(7))
 
@@ -234,12 +252,10 @@ def amplitude_contrast_to_angle(amp_contrast: pd.Series) -> pd.Series:
     """
     value: pd.Series
 
-    value = np.arctan2(amp_contrast / np.sqrt(1e4 - amp_contrast**2))
-    if value < 0:
-        value += 360
-    else:
-        pass
-    return value
+    value = np.arctan2(amp_contrast, np.sqrt(1e4 - amp_contrast**2))
+    mask = (value < 0)
+    value.loc[mask] += 2 * np.pi
+    return np.degrees(value)
 
 
 def angle_to_amplitude_contrast(angle: pd.Series) -> pd.Series:
@@ -252,4 +268,4 @@ def angle_to_amplitude_contrast(angle: pd.Series) -> pd.Series:
     Returns:
     Value of the amplitude contrast in percent.
     """
-    return np.tan(np.radians(angle)) / sqrt(1 + np.tan(np.radians(angle))**2) * 100.0
+    return np.tan(np.radians(angle)) / np.sqrt(1 + np.tan(np.radians(angle))**2) * 100.0

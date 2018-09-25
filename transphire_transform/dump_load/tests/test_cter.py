@@ -109,9 +109,9 @@ class TestLoadCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
+            2.307018,
+            2.779399,
+            2.279982,
             0.4386,
             0,
             0.1,
@@ -123,7 +123,7 @@ class TestLoadCterV10:
             columns=columns
             )
 
-        assert data_frame.equals(return_frame.round(7))
+        assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_should_return_filled_data_frame(self):
         file_name = os.path.join(THIS_DIR, 'cter_v1_0.txt')
@@ -168,9 +168,9 @@ class TestLoadCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
+            2.307018,
+            2.779399,
+            2.279982,
             0.4386,
             0,
             0.1,
@@ -182,7 +182,7 @@ class TestLoadCterV10:
             columns=columns
             )
 
-        assert data_frame.equals(return_frame.round(7))
+        assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_low_angle_should_return_filled_data_frame(self):
         file_name = os.path.join(THIS_DIR, 'cter_v1_0_low_angle.txt')
@@ -227,9 +227,9 @@ class TestLoadCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
+            2.307018,
+            2.779399,
+            2.279982,
             0.4386,
             0,
             0.1,
@@ -241,7 +241,7 @@ class TestLoadCterV10:
             columns=columns
             )
 
-        assert data_frame.equals(return_frame.round(7))
+        assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_high_angle_should_return_filled_data_frame(self):
         file_name = os.path.join(THIS_DIR, 'cter_v1_0_high_angle.txt')
@@ -286,9 +286,9 @@ class TestLoadCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
+            2.307018,
+            2.779399,
+            2.279982,
             0.4386,
             0,
             0.1,
@@ -300,7 +300,7 @@ class TestLoadCterV10:
             columns=columns
             )
 
-        assert data_frame.equals(return_frame.round(7))
+        assert data_frame.round(5).equals(return_frame.round(5))
 
 
 class TestDefocusDefocusDiffToDefocuUAndV:
@@ -469,10 +469,10 @@ class TestDumpCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
+            2.30702,
+            2.77940,
+            2.27998,
+            0,
             0,
             0.1,
             0,
@@ -499,10 +499,10 @@ class TestDumpCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
+            0.4334596,
+            0.3597899,
+            0.4386003,
+            0.0,
             0.0,
             10.0,
             0.0,
@@ -563,10 +563,10 @@ class TestDumpCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
+            2.30702,
+            2.77940,
+            2.27998,
+            0,
             0,
             0.1,
             0,
@@ -593,10 +593,10 @@ class TestDumpCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
+            0.4334596,
+            0.3597899,
+            0.4386003,
+            0,
             0.0,
             10.0,
             0.0,
@@ -757,9 +757,9 @@ class TestDumpCterV10:
             0.0,
             0.0,
             0.0,
-            0.0,
-            3.15,
-            2.28,
+            0.3174603,
+            0.3174603,
+            0.4385965,
             0.0,
             0.0,
             10.0,
@@ -821,10 +821,10 @@ class TestDumpCterV10:
             6.5849,
             0.045268,
             3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
+            2.3070179,
+            2.7793991,
+            2.2799818,
+            0,
             0,
             0.1,
             0,
@@ -853,8 +853,8 @@ class TestDumpCterV10:
             3.4734,
             0.43346,
             0.35979,
-            0.4386,
-            0.4386,
+            0.43860,
+            0.0,
             0.0,
             10.0,
             0.0,
