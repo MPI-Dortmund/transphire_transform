@@ -702,3 +702,600 @@ class TestAngleToAmplitudeContrast:
         value = pd.Series([0, 90, -90, 30, 150], dtype=float)
         data_frame = cter.angle_to_amplitude_contrast(value)
         assert return_value.equals(data_frame.round(1))
+
+
+class TestInternToCter:
+
+    def test_input_cter_values_should_return_output_values(self):
+        columns = (
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            0.1,
+            19.435,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            0,
+            ]]
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            10.0,
+            25.565,
+            0.4334599903,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            0
+            ]]
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_input_ctffind_values_should_return_output_values(self):
+        columns = (
+            'pixel_size',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            1.14,
+            0,
+            19.435,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            0
+            ]]
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'astigmatism_angle',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            1.14,
+            10.0,
+            25.565,
+            0.3597900122,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            0
+            ]]
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_input_ctffind_high_angle_values_should_return_output_values(self):
+        columns = (
+            'pixel_size',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            1.14,
+            0,
+            19.435+720,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            0
+            ]]
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'astigmatism_angle',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            1.14,
+            10.0,
+            25.565,
+            0.3597900122,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            0
+            ]]
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_input_ctffind_low_angle_values_should_return_output_values(self):
+        columns = (
+            'pixel_size',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            1.14,
+            0,
+            19.435-720,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            0
+            ]]
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'astigmatism_angle',
+            'resolution_limit',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            1.14,
+            10.0,
+            25.565,
+            0.3597900122,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            0
+            ]]
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_input_ctffind_phase_shift_values_should_return_output_values(self):
+        columns = (
+            'pixel_size',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            1.14,
+            0,
+            19.435-720,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'astigmatism_angle',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            1.14,
+            -99.49874,
+            25.565,
+            0.3597900122,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            90
+            ]]
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_input_ctffind_phase_shift_multiline_values_should_return_output_values(self):
+        columns = (
+            'pixel_size',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data = [[
+            1.14,
+            0,
+            19.435-720,
+            2.307018,
+            2.779399,
+            2.279982,
+            0.1,
+            90
+            ]]*2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        valid_list = [
+            'astigmatism_angle',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            ]
+        cter.intern_to_cter(data_frame, valid_list)
+
+        return_data = [[
+            1.14,
+            -99.49874,
+            25.565,
+            0.3597900122,
+            0.3597900122,
+            0.4385999539,
+            10.0,
+            90
+            ]]*2
+        return_frame = pd.DataFrame(
+            return_data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+
+class TestCterToIntern:
+
+    def test_input_cter_should_modify_input_data(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.1,
+            -99.49874,
+            25.565,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        columns_output = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_output = [[
+            2,
+            0.1,
+            -0.994987,
+            19.435,
+            2.307018,
+            2.779399,
+            2.279982,
+            .1,
+            90
+            ]]
+        return_frame = pd.DataFrame(
+            data_output,
+            columns=columns_output
+            )
+
+        cter.cter_to_intern(data_frame)
+        assert return_frame.equals(data_frame.round(6))
+
+    def test_input_cter_should_drop_defocus(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.1,
+            -99.49874,
+            25.565,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        _, dropped_data_cter = cter.cter_to_intern(data_frame)
+        assert 'defocus' not in dropped_data_cter
+
+    def test_input_cter_should_drop_astigmatism_amplitude(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.1,
+            -99.49874,
+            25.565,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        _, dropped_data_cter = cter.cter_to_intern(data_frame)
+        assert 'astigmatism_amplitude' not in dropped_data_cter
+
+    def test_input_cter_should_return_correct_defocus_u_and_v(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.2,
+            -99.49874,
+            25.565,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        columns_output = (
+            'defocus_u',
+            'defocus_v'
+            )
+        data_output = [[
+            21000,
+            19000
+            ]]
+        output_frame = pd.DataFrame(
+            data_output,
+            columns=columns_output,
+            dtype=float
+            )
+
+        return_data, _ = cter.cter_to_intern(data_frame)
+        assert output_frame.equals(return_data.round(6))
+
+    def test_input_cter_large_angle_should_modify_input_data(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.1,
+            -99.49874,
+            25.565+720,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        columns_output = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_output = [[
+            2,
+            0.1,
+            -0.994987,
+            19.435,
+            2.307018,
+            2.779399,
+            2.279982,
+            .1,
+            90
+            ]]
+        return_frame = pd.DataFrame(
+            data_output,
+            columns=columns_output
+            )
+
+        cter.cter_to_intern(data_frame)
+        assert return_frame.equals(data_frame.round(6))
+
+    def test_input_cter_small_angle_should_modify_input_data(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            0.1,
+            -99.49874,
+            25.565-720,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        columns_output = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_output = [[
+            2,
+            0.1,
+            -0.994987,
+            19.435,
+            2.307018,
+            2.779399,
+            2.279982,
+            .1,
+            90
+            ]]
+        return_frame = pd.DataFrame(
+            data_output,
+            columns=columns_output
+            )
+
+        cter.cter_to_intern(data_frame)
+        assert return_frame.equals(data_frame.round(6))

@@ -85,30 +85,8 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
         file_name,
         names=header_names,
         )
-    cter_data['ac'] = cter_data['ac'] / 100
-    cter_data['total_ac'] = cter_data['total_ac'] / 100
-    cter_data['astigmatism_angle'] = 45 - cter_data['astigmatism_angle']
 
-    cter_data['nyquist'] = 1 / cter_data['nyquist']
-    cter_data['resolution_limit'] = 1 / cter_data['resolution_limit']
-    cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
-
-    mask = (cter_data['astigmatism_angle'] < 0)
-    while mask.any():
-        cter_data.loc[mask, 'astigmatism_angle'] += 180
-        mask = (cter_data['astigmatism_angle'] < 0)
-
-    mask = (cter_data['astigmatism_angle'] >= 180)
-    while mask.any():
-        cter_data.loc[mask, 'astigmatism_angle'] -= 180
-        mask = (cter_data['astigmatism_angle'] >= 180)
-
-    defocus_data = pd.DataFrame(index=range(len(cter_data)), columns=('defocus_u', 'defocus_v'))
-    defocus_data['defocus_u'], defocus_data['defocus_v'] = defocus_defocus_diff_to_defocus_u_and_v(
-        cter_data['defocus'],
-        cter_data['astigmatism_amplitude']
-        )
-    cter_data_dropped = cter_data.drop(labels=['defocus', 'astigmatism_amplitude'], axis=1)
+    defocus_data, cter_data_dropped = cter_to_intern(cter_data=cter_data)
 
     return pd.concat([defocus_data, cter_data_dropped], axis=1)
 
@@ -128,7 +106,6 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
     cter_valid_list: typing.List[str]
     defocus_frame: pd.DataFrame
     output_frame: pd.DataFrame
-    mask: pd.Series
 
     cter_valid_list = []
     cter_header_names = get_cter_v1_0_header_names()
@@ -160,39 +137,92 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
             except KeyError:
                 pass
 
-    output_frame['ac'] = output_frame['ac'] * 100
-    output_frame['astigmatism_angle'] = 45 - output_frame['astigmatism_angle']
-
-    mask = (output_frame['astigmatism_angle'] < 0)
-    while mask.any():
-        output_frame.loc[mask, 'astigmatism_angle'] += 180
-        mask = (output_frame['astigmatism_angle'] < 0)
-
-    mask = (output_frame['astigmatism_angle'] >= 180)
-    while mask.any():
-        output_frame.loc[mask, 'astigmatism_angle'] -= 180
-        mask = (output_frame['astigmatism_angle'] >= 180)
-
-    if 'total_ac' in cter_valid_list:
-        output_frame['total_ac'] = output_frame['total_ac'] * 100
-    else:
-        amp_cont_angle = amplitude_contrast_to_angle(output_frame['ac'])
-        total_phase = amp_cont_angle + output_frame['phase_shift']
-        output_frame['total_ac'] = angle_to_amplitude_contrast(total_phase)
-
-    if 'nyquist' in cter_valid_list:
-        output_frame['nyquist'] = 1 / output_frame['nyquist']
-    else:
-        output_frame['nyquist'] = 1 / (2 * output_frame['pixel_size'])
-
-    if 'resolution_limit_defocus' in cter_valid_list:
-        output_frame['resolution_limit_defocus'] = 1 / output_frame['resolution_limit_defocus']
-    else:
-        output_frame['resolution_limit_defocus'] = 1 / output_frame['resolution_limit']
-
-    output_frame['resolution_limit'] = 1 / output_frame['resolution_limit']
+    intern_to_cter(cter_data=output_frame, valid_list=cter_valid_list)
 
     util.dump_file(file_name=file_name, data=output_frame.round(7))
+
+
+def cter_to_intern(cter_data: pd.DataFrame) -> typing.Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Convert the necessary values from cter format to internal mrc format.
+
+    Arguments:
+    cter_data - Data containing the raw information.
+
+    Returns:
+    None
+    """
+    cter_data['ac'] = cter_data['ac'] / 100
+    cter_data['total_ac'] = cter_data['total_ac'] / 100
+    cter_data['astigmatism_angle'] = 45 - cter_data['astigmatism_angle']
+
+    cter_data['nyquist'] = 1 / cter_data['nyquist']
+    cter_data['resolution_limit'] = 1 / cter_data['resolution_limit']
+    cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
+
+    mask = (cter_data['astigmatism_angle'] < 0)
+    while mask.any():
+        cter_data.loc[mask, 'astigmatism_angle'] += 180
+        mask = (cter_data['astigmatism_angle'] < 0)
+
+    mask = (cter_data['astigmatism_angle'] >= 180)
+    while mask.any():
+        cter_data.loc[mask, 'astigmatism_angle'] -= 180
+        mask = (cter_data['astigmatism_angle'] >= 180)
+
+    defocus_data = pd.DataFrame(index=range(len(cter_data)), columns=('defocus_u', 'defocus_v'))
+    defocus_data['defocus_u'], defocus_data['defocus_v'] = defocus_defocus_diff_to_defocus_u_and_v(
+        cter_data['defocus'],
+        cter_data['astigmatism_amplitude']
+        )
+    cter_data_dropped = cter_data.drop(labels=['defocus', 'astigmatism_amplitude'], axis=1)
+    return defocus_data, cter_data_dropped
+
+
+def intern_to_cter(cter_data: pd.DataFrame, valid_list: typing.List[str]) -> None:
+    """
+    Convert the necessary values from cter format to internal mrc format.
+
+    Arguments:
+    cter_data - Data containing the raw information.
+
+    Returns:
+    None
+    """
+    mask: pd.Series
+
+    cter_data['ac'] = cter_data['ac'] * 100
+    cter_data['astigmatism_angle'] = 45 - cter_data['astigmatism_angle']
+
+    mask = (cter_data['astigmatism_angle'] < 0)
+    while mask.any():
+        cter_data.loc[mask, 'astigmatism_angle'] += 180
+        mask = (cter_data['astigmatism_angle'] < 0)
+
+    mask = (cter_data['astigmatism_angle'] >= 180)
+    while mask.any():
+        cter_data.loc[mask, 'astigmatism_angle'] -= 180
+        mask = (cter_data['astigmatism_angle'] >= 180)
+
+    if 'total_ac' in valid_list:
+        cter_data['total_ac'] = cter_data['total_ac'] * 100
+    else:
+        amp_cont_angle = amplitude_contrast_to_angle(cter_data['ac'])
+        total_phase = amp_cont_angle + cter_data['phase_shift']
+        cter_data['total_ac'] = angle_to_amplitude_contrast(total_phase)
+
+    if 'nyquist' in valid_list:
+        cter_data['nyquist'] = 1 / cter_data['nyquist']
+    else:
+        cter_data['nyquist'] = 1 / (2 * cter_data['pixel_size'])
+
+    if 'resolution_limit_defocus' in valid_list:
+        cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
+    else:
+        cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit']
+
+    cter_data['resolution_limit'] = 1 / cter_data['resolution_limit']
+    return None
 
 
 def defocus_defocus_diff_to_defocus_u_and_v(
