@@ -616,262 +616,74 @@ class TestDumpCterV10:
 
         assert expected_data == input_data
 
-    def test_valid_multiline_cter_data_should_create_correct_file(self, tmpdir):
-        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_multiline_cter_data_should_create_correct_file.star')
-        columns = (
-            'defocus_u',
-            'defocus_v',
-            'cs',
-            'kv',
-            'pixel_size',
-            'b_factor',
-            'total_ac',
-            'astigmatism_angle',
-            'std_defocus',
-            'std_total_ac',
-            'std_astigmatism_amplitude',
-            'std_astigmatism_angle',
-            'variation_defocus',
-            'variation_astigmatism_amplitude',
-            'resolution_limit_defocus',
-            'resolution_limit',
-            'nyquist',
-            'spare_1',
-            'spare_2',
-            'ac',
-            'phase_shift',
-            'micrograph_name'
-            )
-        data = [[
-            22862.365,
-            22257.635,
-            0.01,
-            300,
-            1.14,
-            0,
-            0.1,
-            19.435,
-            0.0010212,
-            0,
-            0.0021005,
-            6.5849,
-            0.045268,
-            3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
-            0,
-            0.1,
-            0,
-            'test_file.mrc'
-            ]]*2
-        data_frame = pd.DataFrame(
-            data,
-            columns=columns
-            )
-        cter.dump_cter_v1_0(output_file, data_frame)
 
-        expected_data = [[
-            2.256,
-            0.01,
-            300.0,
-            1.14,
-            0.0,
-            10.0,
-            0.060473,
-            25.565 ,
-            0.0010212,
-            0.0,
-            0.0021005,
-            6.5849,
-            0.045268,
-            3.4734,
-            0.43346,
-            0.35979,
-            0.4386,
-            0.4386,
-            0.0,
-            10.0,
-            0.0,
-            'test_file.mrc',
-            ]] * 2
-        input_data = []
-        with open(output_file, 'r') as read:
-            for idx, line in enumerate(read.readlines()):
-                line = line.strip().split()
-                input_data.append([])
-                for entry in line:
-                    try:
-                        data = float(entry)
-                    except ValueError:
-                        data = entry
-                    input_data[idx].append(data)
+class TestAmplitudeContrastToAngle:
 
-        assert expected_data == input_data
+    def test_zero_should_return_zero(self):
+        value = pd.Series([0])
+        return_value = pd.Series([0], dtype=float)
+        assert cter.amplitude_contrast_to_angle(value).equals(return_value)
 
-    def test_valid_ctffind_data_should_create_correct_file(self, tmpdir):
-        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_ctffind_data_should_create_correct_file.star')
-        columns = (
-            'defocus_u',
-            'defocus_v',
-            'cs',
-            'kv',
-            'pixel_size',
-            'astigmatism_angle',
-            'ac',
-            'phase_shift',
-            'resolution_limit',
-            'micrograph_name'
-            )
-        data = [
-            22862.365,
-            22257.635,
-            0.01,
-            300,
-            1.14,
-            19.435,
-            0.1,
-            0,
-            3.15,
-            'test_file.mrc'
-            ]
-        data_frame = pd.DataFrame(
-            [data],
-            columns=columns
-            )
-        cter.dump_cter_v1_0(output_file, data_frame)
+    def test_100_should_return_ninety(self):
+        value = pd.Series([100])
+        return_value = pd.Series([90], dtype=float)
+        assert cter.amplitude_contrast_to_angle(value).equals(return_value)
 
-        expected_data = [[
-            2.256,
-            0.01,
-            300.0,
-            1.14,
-            0.0,
-            10.0,
-            0.060473,
-            25.565 ,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.3174603,
-            0.3174603,
-            0.4385965,
-            0.0,
-            0.0,
-            10.0,
-            0.0,
-            'test_file.mrc',
-            ]]
-        input_data = []
-        with open(output_file, 'r') as read:
-            for idx, line in enumerate(read.readlines()):
-                line = line.strip().split()
-                input_data.append([])
-                for entry in line:
-                    try:
-                        data = float(entry)
-                    except ValueError:
-                        data = entry
-                    input_data[idx].append(data)
+    def test_minus_100_should_return_ninety(self):
+        value = pd.Series([-100])
+        return_value = pd.Series([90], dtype=float)
+        assert cter.amplitude_contrast_to_angle(value).equals(return_value)
 
-        assert expected_data == input_data
+    def test_50_should_return_30(self):
+        value = pd.Series([50])
+        return_value = pd.Series([30], dtype=float)
+        data_frame = cter.amplitude_contrast_to_angle(value)
+        assert return_value.equals(data_frame.round(1))
 
-    def test_valid_multiline_cter_data_should_create_correct_file(self, tmpdir):
-        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_multiline_cter_data_should_create_correct_file.star')
-        columns = (
-            'defocus_u',
-            'defocus_v',
-            'cs',
-            'kv',
-            'pixel_size',
-            'b_factor',
-            'total_ac',
-            'astigmatism_angle',
-            'std_defocus',
-            'std_total_ac',
-            'std_astigmatism_amplitude',
-            'std_astigmatism_angle',
-            'variation_defocus',
-            'variation_astigmatism_amplitude',
-            'resolution_limit_defocus',
-            'resolution_limit',
-            'nyquist',
-            'spare_1',
-            'spare_2',
-            'ac',
-            'phase_shift',
-            'micrograph_name'
-            )
-        data = [[
-            22862.365,
-            22257.635,
-            0.01,
-            300,
-            1.14,
-            0,
-            0.1,
-            19.435,
-            0.0010212,
-            0,
-            0.0021005,
-            6.5849,
-            0.045268,
-            3.4734,
-            2.3070179,
-            2.7793991,
-            2.2799818,
-            0,
-            0,
-            0.1,
-            0,
-            'test_file.mrc'
-            ]]*2
-        data_frame = pd.DataFrame(
-            data,
-            columns=columns
-            )
-        cter.dump_cter_v1_0(output_file, data_frame)
+    def test_minus_50_should_return_150(self):
+        value = pd.Series([-50])
+        return_value = pd.Series([150], dtype=float)
+        data_frame = cter.amplitude_contrast_to_angle(value)
+        assert return_value.equals(data_frame.round(1))
 
-        expected_data = [[
-            2.256,
-            0.01,
-            300.0,
-            1.14,
-            0.0,
-            10.0,
-            0.060473,
-            25.565 ,
-            0.0010212,
-            0.0,
-            0.0021005,
-            6.5849,
-            0.045268,
-            3.4734,
-            0.43346,
-            0.35979,
-            0.43860,
-            0.0,
-            0.0,
-            10.0,
-            0.0,
-            'test_file.mrc',
-            ]] * 2
-        input_data = []
-        with open(output_file, 'r') as read:
-            for idx, line in enumerate(read.readlines()):
-                line = line.strip().split()
-                input_data.append([])
-                for entry in line:
-                    try:
-                        data = float(entry)
-                    except ValueError:
-                        data = entry
-                    input_data[idx].append(data)
-
-        assert expected_data == input_data
+    def test_multiline_should_return_correct_values(self):
+        value = pd.Series([0, 100, -100, 50, -50])
+        return_value = pd.Series([0, 90, 90, 30, 150], dtype=float)
+        data_frame = cter.amplitude_contrast_to_angle(value)
+        assert return_value.equals(data_frame.round(1))
 
 
+class TestAngleToAmplitudeContrast:
+
+    def test_zero_should_return_zero(self):
+        return_value = pd.Series([0], dtype=float)
+        value = pd.Series([0], dtype=float)
+        assert cter.angle_to_amplitude_contrast(value).equals(return_value)
+
+    def test_100_should_return_ninety(self):
+        return_value = pd.Series([100], dtype=float)
+        value = pd.Series([90], dtype=float)
+        assert cter.angle_to_amplitude_contrast(value).equals(return_value)
+
+    def test_minus_100_should_return_ninety(self):
+        return_value = pd.Series([-100], dtype=float)
+        value = pd.Series([-90], dtype=float)
+        assert cter.angle_to_amplitude_contrast(value).equals(return_value)
+
+    def test_50_should_return_30(self):
+        return_value = pd.Series([50], dtype=float)
+        value = pd.Series([30], dtype=float)
+        data_frame = cter.angle_to_amplitude_contrast(value)
+        assert return_value.equals(data_frame.round(1))
+
+    def test_minus_50_should_return_150(self):
+        return_value = pd.Series([-50], dtype=float)
+        value = pd.Series([150], dtype=float)
+        data_frame = cter.angle_to_amplitude_contrast(value)
+        assert return_value.equals(data_frame.round(1))
+
+    def test_multiline_should_return_correct_values(self):
+        return_value = pd.Series([0, 100, -100, 50, -50], dtype=float)
+        value = pd.Series([0, 90, -90, 30, 150], dtype=float)
+        data_frame = cter.angle_to_amplitude_contrast(value)
+        assert return_value.equals(data_frame.round(1))

@@ -251,10 +251,11 @@ def amplitude_contrast_to_angle(amp_contrast: pd.Series) -> pd.Series:
     Amplitude contrast value in phase shift in degrees.
     """
     value: pd.Series
+    assert (-100 <= amp_contrast).all() and (amp_contrast <= 100).all(), amp_contrast
 
     value = np.arctan2(amp_contrast, np.sqrt(1e4 - amp_contrast**2))
     mask = (value < 0)
-    value.loc[mask] += 2 * np.pi
+    value.loc[mask] += np.pi
     return np.degrees(value)
 
 
