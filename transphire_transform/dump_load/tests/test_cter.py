@@ -652,6 +652,21 @@ class TestAmplitudeContrastToAngle:
         data_frame = cter.amplitude_contrast_to_angle(value)
         assert return_value.equals(data_frame.round(1))
 
+    def test_200_should_raise_assertionerror(self):
+        value = pd.Series([200])
+        with pytest.raises(AssertionError):
+            assert cter.amplitude_contrast_to_angle(value)
+
+    def test_minus_200_should_raise_assertionerror(self):
+        value = pd.Series([-200])
+        with pytest.raises(AssertionError):
+            assert cter.amplitude_contrast_to_angle(value)
+
+    def test_muliline_200_should_raise_assertionerror(self):
+        value = pd.Series([200, 0, 50])
+        with pytest.raises(AssertionError):
+            assert cter.amplitude_contrast_to_angle(value)
+
 
 class TestAngleToAmplitudeContrast:
 
