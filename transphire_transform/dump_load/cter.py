@@ -78,7 +78,6 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
     """
     header_names: typing.List[str]
     cter_data: pd.DataFrame
-    mask: pd.Series
 
     header_names = get_cter_v1_0_header_names()
     cter_data = util.load_file(
