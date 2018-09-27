@@ -242,8 +242,8 @@ def defocus_defocus_diff_to_defocus_u_and_v(
     defocus_u: pd.Series
     defocus_v: pd.Series
 
-    defocus_v = (20000*defocus - 10000*astigmatism) / 2
-    defocus_u = 20000*defocus - defocus_v
+    defocus_u = (20000*defocus - 10000*astigmatism) / 2
+    defocus_v = 20000*defocus - defocus_u
     return defocus_u, defocus_v
 
 
@@ -262,11 +262,11 @@ def defocus_u_and_v_to_defocus_defocus_diff(
     Mean defocus and astigmatism_amplitude
     """
     defocus: pd.Series
-    astigmatism: pd.Series
+    astigmatism_amplitude: pd.Series
 
     defocus = (defocus_u + defocus_v) / 20000
-    astigmatism = (defocus_u - defocus_v) / 10000
-    return defocus, astigmatism
+    astigmatism_amplitude = (-defocus_u + defocus_v) / 10000
+    return defocus, astigmatism_amplitude
 
 
 def amplitude_contrast_to_angle(amp_contrast: pd.Series) -> pd.Series:

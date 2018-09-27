@@ -95,8 +95,8 @@ class TestLoadCterV10:
             'micrograph_name'
             )
         data = [[
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -154,8 +154,8 @@ class TestLoadCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -213,8 +213,8 @@ class TestLoadCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -272,8 +272,8 @@ class TestLoadCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -315,25 +315,29 @@ class TestDefocusDefocusDiffToDefocuUAndV:
 
     def test_values_should_return_correct_defocus_u(self):
         def_u, _ = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
-        assert def_u == 21000
+        assert def_u == 20000
 
     def test_values_should_return_correct_defocus_v(self):
         _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, 0.1)
+        assert def_v == 21000
+
+    def test_values_inverse_should_return_correct_defocus_v(self):
+        _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(2.05, -0.1)
         assert def_v == 20000
 
     def test_multi_input_should_return_multi_output_defocus_u(self):
         def_u, _ = cter.defocus_defocus_diff_to_defocus_u_and_v(
-            pd.Series([2, 2.05]),
-            pd.Series([0, 0.1])
+            pd.Series([2, 2.05, 2.05]),
+            pd.Series([0, -0.1, 0.1])
             )
-        assert def_u.equals(pd.Series([20000, 21000], dtype=float))
+        assert def_u.equals(pd.Series([20000, 21000, 20000], dtype=float))
 
     def test_multi_input_should_return_multi_output_defocus_v(self):
         _, def_v = cter.defocus_defocus_diff_to_defocus_u_and_v(
-            pd.Series([2, 2.05]),
-            pd.Series([0, 0.1])
+            pd.Series([2, 2.05, 2.05]),
+            pd.Series([0, 0.1, -0.1]),
             )
-        assert def_v.equals(pd.Series([20000, 20000], dtype=float))
+        assert def_v.equals(pd.Series([20000, 21000, 20000], dtype=float))
 
 
 class TestDefocuUAndVToDefocusDefocusDiff:
@@ -352,6 +356,10 @@ class TestDefocuUAndVToDefocusDefocusDiff:
 
     def test_values_should_return_correct_defocus_v(self):
         defocus, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(21000, 20000)
+        assert astigmatism == -0.1
+
+    def test_values_invert_should_return_correct_defocus_v(self):
+        defocus, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(20000, 21000)
         assert astigmatism == 0.1
 
     def test_multi_input_should_return_multi_output_defocus(self):
@@ -363,10 +371,10 @@ class TestDefocuUAndVToDefocusDefocusDiff:
 
     def test_multi_input_should_return_multi_output_astigmatism(self):
         _, astigmatism = cter.defocus_u_and_v_to_defocus_defocus_diff(
-            pd.Series([20000, 21000]),
-            pd.Series([20000, 20000])
+            pd.Series([20000, 21000, 20000]),
+            pd.Series([20000, 20000, 21000]),
             )
-        assert astigmatism.equals(pd.Series([0, 0.1], dtype=float))
+        assert astigmatism.equals(pd.Series([0., -0.1, 0.1], dtype=float))
 
 
 class TestDumpCterV10:
@@ -398,8 +406,8 @@ class TestDumpCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -455,8 +463,8 @@ class TestDumpCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -549,8 +557,8 @@ class TestDumpCterV10:
             'micrograph_name'
             )
         data = [
-            22862.365,
             22257.635,
+            22862.365,
             0.01,
             300,
             1.14,
@@ -1172,8 +1180,53 @@ class TestCterToIntern:
             'defocus_v'
             )
         data_output = [[
+            19000,
             21000,
-            19000
+            ]]
+        output_frame = pd.DataFrame(
+            data_output,
+            columns=columns_output,
+            dtype=float
+            )
+
+        return_data, _ = cter.cter_to_intern(data_frame)
+        assert output_frame.equals(return_data.round(6))
+
+    def test_input_cter_inverse_should_return_correct_defocus_u_and_v(self):
+        columns_input = (
+            'defocus',
+            'astigmatism_amplitude',
+            'total_ac',
+            'astigmatism_angle',
+            'resolution_limit_defocus',
+            'resolution_limit',
+            'nyquist',
+            'ac',
+            'phase_shift',
+            )
+        data_input = [[
+            2,
+            -0.2,
+            -99.49874,
+            25.565,
+            1/2.307018,
+            1/2.779399,
+            1/2.279982,
+            10,
+            90
+            ]]
+        data_frame = pd.DataFrame(
+            data_input,
+            columns=columns_input
+            )
+
+        columns_output = (
+            'defocus_u',
+            'defocus_v'
+            )
+        data_output = [[
+            21000,
+            19000,
             ]]
         output_frame = pd.DataFrame(
             data_output,
