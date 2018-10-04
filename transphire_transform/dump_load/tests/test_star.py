@@ -190,6 +190,23 @@ class TestLoadStarHeader:
         assert star.load_star_header(file_name=output_file) == (data.keys().tolist(), 8)
 
 
+    def test_load_star_header_four_wrong_export(self, tmpdir):
+        data_1 = np.arange(4)
+        data_2 = ['a', 'b', 'c', 'd']
+        data_3 = np.array(np.arange(4), dtype=float)
+        data_4 = [1]*4
+        data = pd.DataFrame({
+            '_rlnMicrographName': data_1,
+            '_rlnImageName': data_2,
+            '_rlnCoordinateX': data_3,
+            '_rlnSgdNextSubset': data_4,
+            })
+
+        output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_header_four_wrong_export.star')
+        star.dump_star(file_name=output_file, data=data, version='relion_3')
+        assert star.load_star_header(file_name=output_file) == (data.keys().tolist()[:-1], 7)
+
+
 class TestLoadStar:
     def test_load_star_single(self, tmpdir):
         data_1 = np.arange(4)
