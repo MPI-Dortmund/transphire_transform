@@ -230,53 +230,34 @@ class TestLoadStar:
             star.load_star(file_name=output_file)
 
 
-class TestHeaderNames:
+class TestImportStarHeader:
 
-
-    def test_get_relion_keys_version2(self):
+    def test_MicrographName_outputs_MicrographName(self):
         """
         """
-        keys = star.get_relion_keys(version=2)
-        assert '_rlnMicrographName' in keys
+        out_dict = star.import_star_header(['_rlnMicrographName'])
+        assert ['_rlnMicrographName'] == out_dict
 
-
-    def test_get_relion_keys_version2_istuple(self):
+    def test_SgdSkipAnneal_outputs_SgdSkipAnneal(self):
         """
         """
-        keys = star.get_relion_keys(version=2)
-        assert isinstance(keys, tuple)
+        out_dict = star.import_star_header(['_rlnSgdSkipAnneal'])
+        assert ['_rlnSgdSkipAnneal'] == out_dict
 
-
-    def test_get_relion_keys_version2_len(self):
+    def test_SgdNextSubset_outputs_SgdNextSubset(self):
         """
         """
-        keys = star.get_relion_keys(version=2)
-        assert len(keys) == 295
+        out_dict = star.import_star_header(['_rlnSgdNextSubset'])
+        assert ['_rlnSgdNextSubset'] == out_dict
 
-
-    def test_get_relion_keys_version3(self):
-        """
-        """
-        keys = star.get_relion_keys(version=3)
-        assert '_rlnMicrographName' in keys
-
-
-    def test_get_relion_keys_version3_istuple(self):
-        """
-        """
-        keys = star.get_relion_keys(version=3)
-        assert isinstance(keys, tuple)
-
-
-    def test_get_relion_keys_version3_len(self):
-        """
-        """
-        keys = star.get_relion_keys(version=3)
-        assert len(keys) == 342
-
-
-    def test_get_relion_keys_version4_len(self):
+    def test_testii_raises_AssertionError(self):
         """
         """
         with pytest.raises(AssertionError):
-            star.get_relion_keys(version=4)
+            star.import_star_header(['testii'])
+
+    def test_empty_header_raises_AssertionError(self):
+        """
+        """
+        with pytest.raises(AssertionError):
+            star.import_star_header([])

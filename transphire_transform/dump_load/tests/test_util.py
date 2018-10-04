@@ -323,3 +323,30 @@ class TestImportKeys:
 
         with pytest.raises(AssertionError):
             util.import_keys(output_file)
+
+
+class TestParseKeysToDict:
+
+    def test_input_unspecified_to_output(self):
+        data = ('test',)
+        data_output = {'test': 'test'}
+        data_return = util.parse_keys_to_dict(data)
+        assert data_output == data_return
+
+    def test_input_unspecified_export_to_output(self):
+        data = ('test',)
+        data_output = {'test': 'test'}
+        data_return = util.parse_keys_to_dict(data, True)
+        assert data_output == data_return
+
+    def test_input_specified_to_output(self):
+        data = ('test:test2',)
+        data_output = {'test': 'test2'}
+        data_return = util.parse_keys_to_dict(data)
+        assert data_output == data_return
+
+    def test_input_specified_export_to_output(self):
+        data = ('test:test2',)
+        data_output = {'test2': 'test'}
+        data_return = util.parse_keys_to_dict(data, True)
+        assert data_output == data_return
