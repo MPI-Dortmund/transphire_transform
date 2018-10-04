@@ -142,3 +142,37 @@ def import_keys(input_file: str) -> typing.Tuple[str, ...]:
             key_list.append(key)
 
     return tuple(key_list)
+
+
+def parse_keys_to_dict(keys: typing.Tuple[str, ...], export: bool=False) -> typing.Dict[str, str]:
+    """
+    Create a dictionary based on the keys tuple.
+    If export is True, the key, value pair will be inverted
+
+    Arguments:
+    keys - Keys tuple to parse
+    export - If the keys should be there for export.
+
+    Returns:
+    Dictionary containing the keys.
+    """
+    output_dict: typing.Dict[str, str]
+    dict_key: str
+    dict_value: str
+
+    output_dict = {}
+    for key in keys:
+        try:
+            dict_key, dict_value = key.split(':')
+        except ValueError:
+            dict_key = key
+            dict_value = key
+        else:
+            if export:
+                dict_key, dict_value = dict_value, dict_key
+            else:
+                pass
+        assert dict_key not in output_dict
+        output_dict[dict_key] = dict_value
+
+    return output_dict
