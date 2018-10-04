@@ -33,7 +33,7 @@ FILE_DIRECTORY: str = os.path.dirname(os.path.realpath(__file__))
 
 def create_star_header(names: typing.List[str]) -> typing.List[str]:
     """
-    Create a header for a relion star file.
+    Create a header for a star file.
 
     Arguments:
     names - List or array of header names
@@ -51,21 +51,27 @@ def create_star_header(names: typing.List[str]) -> typing.List[str]:
     return output_list
 
 
-def dump_star(file_name: str, data: pd.DataFrame) -> None:
+def dump_star(file_name: str, data: pd.DataFrame, version: str) -> None:
     """
-    Create a relion star file.
+    Create a star file.
 
     Arguments:
     file_name - File name to export
     data - Data to export
+    version - output version string
 
     Returns:
     None
     """
-    header: typing.List[str] = create_star_header(names=data.keys())
+    header: typing.List[str]
+    new_header: typing.List[str]
+    old_header: typing.List[str]
+
+    new_header, old_header = export_star_header(header_names=data.keys(), version=version)
+    header = create_star_header(names=new_header)
     util.dump_file(
         file_name=file_name,
-        data=data,
+        data=data[old_header],
         header=header,
         vertical=True
         )
@@ -104,10 +110,10 @@ def load_star_header(file_name: str) -> typing.Tuple[typing.List[str], int]:
 
 def load_star(file_name: str) -> pd.DataFrame:
     """
-    Load a relion star file.
+    Load a star file.
 
     Arguments:
-    file_name - Path to the relion star file
+    file_name - Path to the star file
 
     Returns:
     Pandas dataframe containing the star file
@@ -124,16 +130,16 @@ def load_star(file_name: str) -> pd.DataFrame:
 def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     """
     Get the header keys.
-    Detect the relion version automatically.
+    Detect the star version automatically.
 
     Arguments:
-    relion_header - Relion star file header.
+    header_names - star file header.
 
     Returns:
-    Tuple of keys
+    List of new keys
     """
-    relion_key_files: typing.List[str]
-    relion_version: typing.Dict[str, typing.Tuple[str, ...]]
+    key_files: typing.List[str]
+    star_version: typing.Dict[str, typing.Tuple[str, ...]]
     version_match: typing.Pattern
     versions: typing.Optional[typing.List[str]]
     version: typing.Optional[str]
@@ -141,27 +147,27 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     import_dict: typing.Dict[str, str]
     output_header: typing.List[str]
 
-    relion_key_files = glob.glob(os.path.join(FILE_DIRECTORY, 'keys', 'relion_keys_*.txt'))
-    relion_version = {}
-    version_match = re.compile(r'.*relion_keys_([0-9\.]*)\.txt')
+    key_files = glob.glob(os.path.join(FILE_DIRECTORY, 'keys', 'star_keys_*.txt'))
+    star_version = {}
+    version_match = re.compile(r'.*star_keys_(.*)\.txt')
     versions = None
     version = None
     key_match = None
 
-    for file_name in sorted(relion_key_files):
+    for file_name in sorted(key_files):
         key_match = version_match.match(file_name)
         assert key_match is not None
-        relion_version[key_match.group(1)] = util.import_keys(file_name)
+        star_version[key_match.group(1)] = util.import_keys(file_name)
 
     for name in header_names:
         versions = []
 
-        for key, value in relion_version.items():
+        for key, value in star_version.items():
             if name in value:
                 versions.append(key)
 
         if not versions:
-            assert False, f'Relion key not known in present versions: {name}'
+            assert False, f'Star key not known in present versions: {name}'
         elif len(versions) == 1:
             version = versions[0]
             break
@@ -170,8 +176,49 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     assert version is not None, f'Header names is empty!'
 
     output_header = []
-    import_dict = util.parse_keys_to_dict(relion_version[version])
+    import_dict = util.parse_keys_to_dict(star_version[version])
     for name in header_names:
         output_header.append(import_dict[name])
 
     return output_header
+
+
+def export_star_header(
+        header_names: typing.List[str],
+        version: str
+    ) -> typing.Tuple[typing.List[str], typing.List[str]]:
+    """
+    Get the header keys.
+
+    Arguments:
+    header_names - star file header.
+    version - Output star file version
+
+    Returns:
+    List of new keys
+    """
+    key_tuple: typing.Tuple[str, ...]
+    output_header: typing.List[str]
+    old_header_values: typing.List[str]
+    export_dict: typing.Dict[str, str]
+
+    key_tuple = util.import_keys(
+        os.path.join(FILE_DIRECTORY, 'keys', f'star_keys_{version}.txt')
+        )
+    export_dict = util.parse_keys_to_dict(key_tuple, export=True)
+
+    output_header = []
+    old_header_values = []
+    for name in header_names:
+        try:
+            new_name = export_dict[name]
+        except KeyError:
+            continue
+        else:
+            output_header.append(new_name)
+            old_header_values.append(name)
+
+    assert output_header
+    assert old_header_values
+
+    return output_header, old_header_values

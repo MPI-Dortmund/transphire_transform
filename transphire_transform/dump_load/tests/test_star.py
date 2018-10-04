@@ -126,14 +126,14 @@ class TestDumpStar:
         data_3 = np.array(np.arange(4), dtype=float)
         data_4 = [1]*4
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
-            '_rlnTest2': data_2,
-            '_rlnTest3': data_3,
-            '_pipeTest4': data_4,
+            '_rlnMicrographName': data_1,
+            '_rlnImageName': data_2,
+            '_rlnCoordinateX': data_3,
+            '_rlnCoordinateY': data_4,
             })
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_four.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star(file_name=output_file).equals(data)
 
 
@@ -142,11 +142,11 @@ class TestDumpStar:
         """
         data_1 = np.arange(4)
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
+            '_rlnCoordinateX': data_1,
             })
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star(file_name=output_file).equals(data)
 
 
@@ -157,19 +157,19 @@ class TestDumpStar:
             })
 
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_dump_star_single_empty.star')
-        with pytest.raises(IOError):
-            star.dump_star(file_name=output_file, data=data)
+        with pytest.raises(AssertionError):
+            star.dump_star(file_name=output_file, data=data, version='relion_2')
 
 
 class TestLoadStarHeader:
     def test_load_star_header_single(self, tmpdir):
         data_1 = np.arange(4)
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
+            '_rlnMicrographName': data_1,
             })
 
         output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_header_single.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star_header(file_name=output_file) == (data.keys().tolist(), 5)
 
 
@@ -179,14 +179,14 @@ class TestLoadStarHeader:
         data_3 = np.array(np.arange(4), dtype=float)
         data_4 = [1]*4
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
-            '_rlnTest2': data_2,
-            '_rlnTest3': data_3,
-            '_pipeTest4': data_4,
+            '_rlnMicrographName': data_1,
+            '_rlnImageName': data_2,
+            '_rlnCoordinateX': data_3,
+            '_rlnCoordinateY': data_4,
             })
 
         output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_header_four.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star_header(file_name=output_file) == (data.keys().tolist(), 8)
 
 
@@ -194,11 +194,11 @@ class TestLoadStar:
     def test_load_star_single(self, tmpdir):
         data_1 = np.arange(4)
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
+            '_rlnMicrographName': data_1,
             })
 
         output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_single.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star(file_name=output_file).equals(data)
 
 
@@ -208,14 +208,14 @@ class TestLoadStar:
         data_3 = np.array(np.arange(4), dtype=float)
         data_4 = [1]*4
         data = pd.DataFrame({
-            '_rlnTest1': data_1,
-            '_rlnTest2': data_2,
-            '_rlnTest3': data_3,
-            '_pipeTest4': data_4,
+            '_rlnMicrographName': data_1,
+            '_rlnImageName': data_2,
+            '_rlnCoordinateX': data_3,
+            '_rlnCoordinateY': data_4,
             })
 
         output_file = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_load_star_four.star')
-        star.dump_star(file_name=output_file, data=data)
+        star.dump_star(file_name=output_file, data=data, version='relion_2')
         assert star.load_star(file_name=output_file).equals(data)
 
 
@@ -261,3 +261,34 @@ class TestImportStarHeader:
         """
         with pytest.raises(AssertionError):
             star.import_star_header([])
+
+
+class TestExportStarHeader:
+
+    def test_input_relion2_outputs_relion2_correct_out_header(self):
+        out_header, _ = star.export_star_header(
+            ['_rlnMicrographName', '_rlnSgdNextSubset'],
+            version='relion_2'
+            )
+        assert ['_rlnMicrographName', '_rlnSgdNextSubset'] == out_header
+
+    def test_input_relion2_outputs_relion2_correct_old_header(self):
+        _, old_header = star.export_star_header(
+            ['_rlnMicrographName', '_rlnSgdNextSubset'],
+            version='relion_2'
+            )
+        assert ['_rlnMicrographName', '_rlnSgdNextSubset'] == old_header
+
+    def test_input_relion2_outputs_relion3_correct_out_header(self):
+        out_header, _ = star.export_star_header(
+            ['_rlnMicrographName', '_rlnSgdNextSubset'],
+            version='relion_3'
+            )
+        assert ['_rlnMicrographName'] == out_header
+
+    def test_input_relion2_outputs_relion3_correct_old_header(self):
+        _, old_header = star.export_star_header(
+            ['_rlnMicrographName', '_rlnSgdNextSubset'],
+            version='relion_3'
+            )
+        assert ['_rlnMicrographName'] == old_header
