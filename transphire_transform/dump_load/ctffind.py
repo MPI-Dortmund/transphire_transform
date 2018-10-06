@@ -42,12 +42,12 @@ def get_ctffind4_header_names() -> typing.List[str]:
     List of names
     """
     return [
-        'defocus_u',
-        'defocus_v',
-        'astigmatism_angle',
-        'phase_shift',
-        'cross_correlation',
-        'resolution_limit',
+        '_rlnDefocusU',
+        '_rlnDefocusV',
+        '_rlnDefocusAngle',
+        '_rlnPhaseShift',
+        '_rlnCtfFigureOfMerit',
+        '_rlnCtfMaxResolution',
         ]
 
 

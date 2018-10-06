@@ -242,7 +242,7 @@ _rlnClassNumber # Class number for which a particle has its highest probability)
 _rlnLogLikeliContribution # Contribution of a particle to the log-likelihood target function);
 _rlnParticleId # ID (i.e. a unique number) for a particle);
 _rlnParticleFigureOfMerit # Developmental FOM for a particle);
-_rlnKullbackLeibnerDivergence # Kullback-Leibner divergence for a particle);
+_rlnKullbackLeibnerDivergence:_rlnKullbackLeiblerDivergence # Kullback-Leibner divergence for a particle);
 _rlnRandomSubset # Random subset to which this particle belongs);
 _rlnParticleName # Name for a particles);
 _rlnOriginalParticleName # Original name for a particles);
