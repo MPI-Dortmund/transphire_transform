@@ -48,12 +48,12 @@ class TestGetCtffind4HeaderNames:
 
     def test_call_functions_returns_list(self):
         values = [
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnDefocusAngle',
-            '_rlnPhaseShift',
-            '_rlnCtfFigureOfMerit',
-            '_rlnCtfMaxResolution',
+            'DefocusU',
+            'DefocusV',
+            'DefocusAngle',
+            'PhaseShift',
+            'CtfFigureOfMerit',
+            'CtfMaxResolution',
             ]
         assert ctffind.get_ctffind4_header_names() == values
 
@@ -66,11 +66,11 @@ class TestGetCtffind4Meta:
             [[version, file_name, apix, kv, cs, ac]],
             columns=(
                 'version',
-                '_rlnMicrographNameNoDW',
-                '_rlnPixelSize',
-                '_rlnVoltage',
-                '_rlnSphericalAberration',
-                '_rlnAmplitudeContrast'
+                'MicrographNameNoDW',
+                'PixelSize',
+                'Voltage',
+                'SphericalAberration',
+                'AmplitudeContrast'
                 )
             )
         return_frame = ctffind.get_ctffind4_meta(ctffind4_file)
@@ -87,18 +87,18 @@ class TestLoadCtffind4:
         apix, kv, cs, ac, file_name, version = ctffind4_meta
         def_1, def_2, ast_ang, vpp, cc, limit = ctffind4_data
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnDefocusAngle',
-            '_rlnPhaseShift',
-            '_rlnCtfFigureOfMerit',
-            '_rlnCtfMaxResolution',
+            'DefocusU',
+            'DefocusV',
+            'DefocusAngle',
+            'PhaseShift',
+            'CtfFigureOfMerit',
+            'CtfMaxResolution',
             'version',
-            '_rlnMicrographNameNoDW',
-            '_rlnPixelSize',
-            '_rlnVoltage',
-            '_rlnSphericalAberration',
-            '_rlnAmplitudeContrast'
+            'MicrographNameNoDW',
+            'PixelSize',
+            'Voltage',
+            'SphericalAberration',
+            'AmplitudeContrast'
             )
         data = [
             def_1,
