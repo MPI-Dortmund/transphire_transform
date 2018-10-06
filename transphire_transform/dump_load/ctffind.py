@@ -42,12 +42,12 @@ def get_ctffind4_header_names() -> typing.List[str]:
     List of names
     """
     return [
-        '_rlnDefocusU',
-        '_rlnDefocusV',
-        '_rlnDefocusAngle',
-        '_rlnPhaseShift',
-        '_rlnCtfFigureOfMerit',
-        '_rlnCtfMaxResolution',
+        'DefocusU',
+        'DefocusV',
+        'DefocusAngle',
+        'PhaseShift',
+        'CtfFigureOfMerit',
+        'CtfMaxResolution',
         ]
 
 
@@ -63,11 +63,11 @@ def get_ctffind4_extract_dict() -> typing.Dict[str, str]:
     """
     return {
         'version': r'.*CTFFind version ([^, ]*).*',
-        '_rlnMicrographNameNoDW': r'.*Input file: ([^ ]*).*',
-        '_rlnPixelSize': r'.*Pixel size: ([^ ]*).*',
-        '_rlnVoltage': r'.*acceleration voltage: ([^ ]*).*',
-        '_rlnSphericalAberration': r'.*spherical aberration: ([^ ]*).*',
-        '_rlnAmplitudeContrast': r'.*amplitude contrast: ([^ ]*).*',
+        'MicrographNameNoDW': r'.*Input file: ([^ ]*).*',
+        'PixelSize': r'.*Pixel size: ([^ ]*).*',
+        'Voltage': r'.*acceleration voltage: ([^ ]*).*',
+        'SphericalAberration': r'.*spherical aberration: ([^ ]*).*',
+        'AmplitudeContrast': r'.*amplitude contrast: ([^ ]*).*',
         }
 
 
@@ -93,7 +93,7 @@ def get_ctffind4_meta(file_name: str) -> pd.DataFrame:
         lines = read.readlines()
 
     non_string_values = set([
-        '_rlnMicrographNameNoDW',
+        'MicrographNameNoDW',
         'version'
         ])
     for line in lines:
@@ -131,7 +131,7 @@ def load_ctffind4(file_name: str) -> pd.DataFrame:
         skiprows=5,
         usecols=(1, 2, 3, 4, 5, 6)
         )
-    ctffind_data['_rlnPhaseShift'] = np.degrees(ctffind_data['_rlnPhaseShift'])
+    ctffind_data['PhaseShift'] = np.degrees(ctffind_data['PhaseShift'])
 
     ctffind_meta = get_ctffind4_meta(file_name=file_name)
     return pd.concat([ctffind_data, ctffind_meta], axis=1)
