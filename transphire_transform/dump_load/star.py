@@ -122,11 +122,13 @@ def load_star(file_name: str) -> pd.DataFrame:
     Pandas dataframe containing the star file
     """
     header_names: typing.List[str]
+    import_names: typing.List[str]
     skip_index: int
     star_data: pd.DataFrame
 
     header_names, skip_index = load_star_header(file_name=file_name)
-    star_data = util.load_file(file_name, names=header_names, skiprows=skip_index)
+    import_names = import_star_header(header_names=header_names)
+    star_data = util.load_file(file_name, names=import_names, skiprows=skip_index)
     return star_data
 
 
@@ -142,10 +144,9 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     List of new keys
     """
     key_files: typing.List[str]
-    star_version: typing.Dict[str, typing.Tuple[str, ...]]
+    star_version: typing.Dict[str, typing.Dict[str, str]]
     version_match: typing.Pattern
     versions: typing.Optional[typing.List[str]]
-    version: typing.Optional[str]
     key_match: typing.Optional[typing.Match[str]]
     import_dict: typing.Dict[str, str]
     output_header: typing.List[str]
@@ -154,32 +155,28 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     star_version = {}
     version_match = re.compile(r'.*star_keys_(.*)\.txt')
     versions = None
-    version = None
     key_match = None
 
     for file_name in sorted(key_files):
         key_match = version_match.match(file_name)
         assert key_match is not None
-        star_version[key_match.group(1)] = util.import_keys(file_name)
+        star_version[key_match.group(1)] = util.parse_keys_to_dict(util.import_keys(file_name))
 
     for name in header_names:
         versions = []
 
         for key, value in star_version.items():
-            if name in value:
+            if name.lstrip(f'_{value["STAR_PREFIX"]}') in value:
                 versions.append(key)
 
         if not versions:
             assert False, f'Star key not known in present versions: {name}'
         elif len(versions) == 1:
-            version = versions[0]
             break
-        else:
-            version = versions[-1]
-    assert version is not None, f'Header names is empty!'
+    assert versions is not None, f'Header names is empty!'
 
     output_header = []
-    import_dict = util.parse_keys_to_dict(star_version[version])
+    import_dict = star_version[versions[-1]]
     for name in header_names:
         output_header.append(import_dict[name.lstrip(f'_{import_dict["STAR_PREFIX"]}')])
 
@@ -189,7 +186,7 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
 def export_star_header(
         header_names: typing.List[str],
         version: str
-    ) -> typing.Tuple[typing.List[str], typing.List[str]]:
+    ) -> typing.Tuple[typing.List[str], typing.List[str], str]:
     """
     Get the header keys.
 
