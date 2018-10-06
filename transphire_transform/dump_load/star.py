@@ -31,12 +31,13 @@ from . import util
 
 FILE_DIRECTORY: str = os.path.dirname(os.path.realpath(__file__))
 
-def create_star_header(names: typing.List[str]) -> typing.List[str]:
+def create_star_header(names: typing.List[str], prefix: str) -> typing.List[str]:
     """
     Create a header for a star file.
 
     Arguments:
     names - List or array of header names
+    prefix - Star file header name prefix
 
     Returns:
     Header string
@@ -47,7 +48,7 @@ def create_star_header(names: typing.List[str]) -> typing.List[str]:
         '',
         'loop_',
         ]
-    output_list.extend(util.create_header(names=names, index=True))
+    output_list.extend(util.create_header(names=names, index=True, prefix=prefix))
     return output_list
 
 
@@ -66,9 +67,11 @@ def dump_star(file_name: str, data: pd.DataFrame, version: str) -> None:
     header: typing.List[str]
     new_header: typing.List[str]
     old_header: typing.List[str]
+    prefix: str
 
-    new_header, old_header = export_star_header(header_names=data.keys(), version=version)
-    header = create_star_header(names=new_header)
+    new_header, old_header, prefix = \
+        export_star_header(header_names=data.keys(), version=version)
+    header = create_star_header(names=new_header, prefix=prefix)
     util.dump_file(
         file_name=file_name,
         data=data[old_header],
@@ -178,7 +181,7 @@ def import_star_header(header_names: typing.List[str]) -> typing.List[str]:
     output_header = []
     import_dict = util.parse_keys_to_dict(star_version[version])
     for name in header_names:
-        output_header.append(import_dict[name])
+        output_header.append(import_dict[name.lstrip(f'_{import_dict["STAR_PREFIX"]}')])
 
     return output_header
 
@@ -195,7 +198,7 @@ def export_star_header(
     version - Output star file version
 
     Returns:
-    List of new keys
+    List of new keys, List of valid old keys, prefix
     """
     key_tuple: typing.Tuple[str, ...]
     output_header: typing.List[str]
@@ -221,4 +224,4 @@ def export_star_header(
     assert output_header
     assert old_header_values
 
-    return output_header, old_header_values
+    return output_header, old_header_values, export_dict['STAR_PREFIX']
