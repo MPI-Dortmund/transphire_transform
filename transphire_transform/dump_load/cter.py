@@ -42,13 +42,13 @@ def get_cter_v1_0_header_names() -> typing.List[str]:
     """
     return [
         'defocus',
-        '_rlnSphericalAberration',
-        '_rlnVoltage',
-        '_rlnPixelSize',
+        'SphericalAberration',
+        'Voltage',
+        'PixelSize',
         'b_factor',
         'total_ac',
         'astigmatism_amplitude',
-        '_rlnDefocusAngle',
+        'DefocusAngle',
         'std_defocus',
         'std_total_ac',
         'std_astigmatism_amplitude',
@@ -58,11 +58,11 @@ def get_cter_v1_0_header_names() -> typing.List[str]:
         'resolution_limit_defocus',
         'resolution_limit_defocus_astig',
         'nyquist',
-        '_rlnCtfMaxResolution',
+        'CtfMaxResolution',
         'spare',
-        '_rlnAmplitudeContrast',
-        '_rlnPhaseShift',
-        '_rlnMicrographNameNoDW'
+        'AmplitudeContrast',
+        'PhaseShift',
+        'MicrographNameNoDW'
         ]
 
 
@@ -119,8 +119,8 @@ def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:
 
     defocus_frame['defocus'], defocus_frame['astigmatism_amplitude'] = \
         defocus_u_and_v_to_defocus_defocus_diff(
-            cter_data['_rlnDefocusU'],
-            cter_data['_rlnDefocusV']
+            cter_data['DefocusU'],
+            cter_data['DefocusV']
             )
 
     output_frame = pd.DataFrame(
@@ -151,30 +151,30 @@ def cter_to_intern(cter_data: pd.DataFrame) -> typing.Tuple[pd.DataFrame, pd.Dat
     Returns:
     None
     """
-    cter_data['_rlnAmplitudeContrast'] = cter_data['_rlnAmplitudeContrast'] / 100
+    cter_data['AmplitudeContrast'] = cter_data['AmplitudeContrast'] / 100
     cter_data['total_ac'] = cter_data['total_ac'] / 100
-    cter_data['_rlnDefocusAngle'] = 45 - cter_data['_rlnDefocusAngle']
+    cter_data['DefocusAngle'] = 45 - cter_data['DefocusAngle']
 
     cter_data['nyquist'] = 1 / cter_data['nyquist']
     cter_data['resolution_limit_defocus_astig'] = 1 / cter_data['resolution_limit_defocus_astig']
     cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
-    cter_data['_rlnCtfMaxResolution'] = 1 / cter_data['_rlnCtfMaxResolution']
+    cter_data['CtfMaxResolution'] = 1 / cter_data['CtfMaxResolution']
 
-    mask = (cter_data['_rlnDefocusAngle'] < 0)
+    mask = (cter_data['DefocusAngle'] < 0)
     while mask.any():
-        cter_data.loc[mask, '_rlnDefocusAngle'] += 180
-        mask = (cter_data['_rlnDefocusAngle'] < 0)
+        cter_data.loc[mask, 'DefocusAngle'] += 180
+        mask = (cter_data['DefocusAngle'] < 0)
 
-    mask = (cter_data['_rlnDefocusAngle'] >= 180)
+    mask = (cter_data['DefocusAngle'] >= 180)
     while mask.any():
-        cter_data.loc[mask, '_rlnDefocusAngle'] -= 180
-        mask = (cter_data['_rlnDefocusAngle'] >= 180)
+        cter_data.loc[mask, 'DefocusAngle'] -= 180
+        mask = (cter_data['DefocusAngle'] >= 180)
 
     defocus_data = pd.DataFrame(
         index=range(len(cter_data)),
-        columns=('_rlnDefocusU', '_rlnDefocusV')
+        columns=('DefocusU', 'DefocusV')
         )
-    defocus_data['_rlnDefocusU'], defocus_data['_rlnDefocusV'] = \
+    defocus_data['DefocusU'], defocus_data['DefocusV'] = \
         defocus_defocus_diff_to_defocus_u_and_v(
             cter_data['defocus'],
             cter_data['astigmatism_amplitude']
@@ -195,30 +195,30 @@ def intern_to_cter(cter_data: pd.DataFrame, valid_list: typing.List[str]) -> Non
     """
     mask: pd.Series
 
-    cter_data['_rlnAmplitudeContrast'] = cter_data['_rlnAmplitudeContrast'] * 100
-    cter_data['_rlnDefocusAngle'] = 45 - cter_data['_rlnDefocusAngle']
+    cter_data['AmplitudeContrast'] = cter_data['AmplitudeContrast'] * 100
+    cter_data['DefocusAngle'] = 45 - cter_data['DefocusAngle']
 
-    mask = (cter_data['_rlnDefocusAngle'] < 0)
+    mask = (cter_data['DefocusAngle'] < 0)
     while mask.any():
-        cter_data.loc[mask, '_rlnDefocusAngle'] += 180
-        mask = (cter_data['_rlnDefocusAngle'] < 0)
+        cter_data.loc[mask, 'DefocusAngle'] += 180
+        mask = (cter_data['DefocusAngle'] < 0)
 
-    mask = (cter_data['_rlnDefocusAngle'] >= 180)
+    mask = (cter_data['DefocusAngle'] >= 180)
     while mask.any():
-        cter_data.loc[mask, '_rlnDefocusAngle'] -= 180
-        mask = (cter_data['_rlnDefocusAngle'] >= 180)
+        cter_data.loc[mask, 'DefocusAngle'] -= 180
+        mask = (cter_data['DefocusAngle'] >= 180)
 
     if 'total_ac' in valid_list:
         cter_data['total_ac'] = cter_data['total_ac'] * 100
     else:
-        amp_cont_angle = amplitude_contrast_to_angle(cter_data['_rlnAmplitudeContrast'])
-        total_phase = amp_cont_angle + cter_data['_rlnPhaseShift']
+        amp_cont_angle = amplitude_contrast_to_angle(cter_data['AmplitudeContrast'])
+        total_phase = amp_cont_angle + cter_data['PhaseShift']
         cter_data['total_ac'] = angle_to_amplitude_contrast(total_phase)
 
     if 'nyquist' in valid_list:
         cter_data['nyquist'] = 1 / cter_data['nyquist']
     else:
-        cter_data['nyquist'] = 1 / (2 * cter_data['_rlnPixelSize'])
+        cter_data['nyquist'] = 1 / (2 * cter_data['PixelSize'])
 
     if 'resolution_limit_defocus' in valid_list:
         cter_data['resolution_limit_defocus'] = 1 / cter_data['resolution_limit_defocus']
@@ -231,7 +231,7 @@ def intern_to_cter(cter_data: pd.DataFrame, valid_list: typing.List[str]) -> Non
     else:
         cter_data['resolution_limit_defocus_astig'] = cter_data['nyquist']
 
-    cter_data['_rlnCtfMaxResolution'] = 1 / cter_data['_rlnCtfMaxResolution']
+    cter_data['CtfMaxResolution'] = 1 / cter_data['CtfMaxResolution']
     return None
 
 
