@@ -39,13 +39,13 @@ class TestGetCterV10HeaderNames:
     def test_call_functions_should_return_filled_list(self):
         data = [
             'defocus',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
             'astigmatism_amplitude',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -55,11 +55,11 @@ class TestGetCterV10HeaderNames:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             ]
         assert cter.get_cter_v1_0_header_names() == data
 
@@ -71,14 +71,14 @@ class TestLoadCterV10:
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -88,11 +88,11 @@ class TestLoadCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [[
             22257.635,
@@ -130,14 +130,14 @@ class TestLoadCterV10:
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -147,11 +147,11 @@ class TestLoadCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -189,14 +189,14 @@ class TestLoadCterV10:
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -206,11 +206,11 @@ class TestLoadCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -248,14 +248,14 @@ class TestLoadCterV10:
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -265,11 +265,11 @@ class TestLoadCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -382,14 +382,14 @@ class TestDumpCterV10:
     def test_valid_cter_data_should_create_partres_file(self, tmpdir):
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_should_create_partres_file.star')
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -399,11 +399,11 @@ class TestDumpCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -439,14 +439,14 @@ class TestDumpCterV10:
     def test_valid_cter_data_large_angle_should_create_correct_file(self, tmpdir):
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_large_angle_should_create_correct_file.star')
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -456,11 +456,11 @@ class TestDumpCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -533,14 +533,14 @@ class TestDumpCterV10:
     def test_valid_cter_data_should_create_correct_file(self, tmpdir):
         output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_should_create_correct_partres_file.star')
         columns = (
-            '_rlnDefocusU',
-            '_rlnDefocusV',
-            '_rlnSphericalAberration',
-            '_rlnVoltage',
-            '_rlnPixelSize',
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
             'b_factor',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'std_defocus',
             'std_total_ac',
             'std_astigmatism_amplitude',
@@ -550,11 +550,11 @@ class TestDumpCterV10:
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
+            'CtfMaxResolution',
             'spare',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
-            '_rlnMicrographNameNoDW'
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
             )
         data = [
             22257.635,
@@ -717,13 +717,13 @@ class TestInternToCter:
     def test_input_cter_values_should_return_output_values(self):
         columns = (
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             0.1,
@@ -742,13 +742,13 @@ class TestInternToCter:
 
         valid_list = [
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -771,15 +771,15 @@ class TestInternToCter:
 
     def test_input_ctffind_values_should_return_output_values(self):
         columns = (
-            '_rlnPixelSize',
+            'PixelSize',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             1.14,
@@ -798,11 +798,11 @@ class TestInternToCter:
             )
 
         valid_list = [
-            '_rlnDefocusAngle',
-            '_rlnCtfMaxResolution',
+            'DefocusAngle',
+            'CtfMaxResolution',
             'nyquist',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -826,15 +826,15 @@ class TestInternToCter:
 
     def test_input_ctffind_high_angle_values_should_return_output_values(self):
         columns = (
-            '_rlnPixelSize',
+            'PixelSize',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             1.14,
@@ -853,11 +853,11 @@ class TestInternToCter:
             )
 
         valid_list = [
-            '_rlnDefocusAngle',
-            '_rlnCtfMaxResolution',
+            'DefocusAngle',
+            'CtfMaxResolution',
             'nyquist',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -881,15 +881,15 @@ class TestInternToCter:
 
     def test_input_ctffind_low_angle_values_should_return_output_values(self):
         columns = (
-            '_rlnPixelSize',
+            'PixelSize',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             1.14,
@@ -908,10 +908,10 @@ class TestInternToCter:
             )
 
         valid_list = [
-            '_rlnDefocusAngle',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'DefocusAngle',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -935,15 +935,15 @@ class TestInternToCter:
 
     def test_input_ctffind_phase_shift_values_should_return_output_values(self):
         columns = (
-            '_rlnPixelSize',
+            'PixelSize',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             1.14,
@@ -962,11 +962,11 @@ class TestInternToCter:
             )
 
         valid_list = [
-            '_rlnDefocusAngle',
-            '_rlnCtfMaxResolution',
+            'DefocusAngle',
+            'CtfMaxResolution',
             'nyquist',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -990,15 +990,15 @@ class TestInternToCter:
 
     def test_input_ctffind_phase_shift_multiline_values_should_return_output_values(self):
         columns = (
-            '_rlnPixelSize',
+            'PixelSize',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data = [[
             1.14,
@@ -1017,11 +1017,11 @@ class TestInternToCter:
             )
 
         valid_list = [
-            '_rlnDefocusAngle',
-            '_rlnCtfMaxResolution',
+            'DefocusAngle',
+            'CtfMaxResolution',
             'nyquist',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'AmplitudeContrast',
+            'PhaseShift',
             ]
         cter.intern_to_cter(data_frame, valid_list)
 
@@ -1051,13 +1051,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1080,13 +1080,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_output = [[
             2,
@@ -1113,13 +1113,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1146,13 +1146,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1179,13 +1179,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1205,8 +1205,8 @@ class TestCterToIntern:
             )
 
         columns_output = (
-            '_rlnDefocusU',
-            '_rlnDefocusV'
+            'DefocusU',
+            'DefocusV'
             )
         data_output = [[
             19000,
@@ -1226,13 +1226,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1252,8 +1252,8 @@ class TestCterToIntern:
             )
 
         columns_output = (
-            '_rlnDefocusU',
-            '_rlnDefocusV'
+            'DefocusU',
+            'DefocusV'
             )
         data_output = [[
             21000,
@@ -1273,13 +1273,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1302,13 +1302,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_output = [[
             2,
@@ -1335,13 +1335,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_input = [[
             2,
@@ -1364,13 +1364,13 @@ class TestCterToIntern:
             'defocus',
             'astigmatism_amplitude',
             'total_ac',
-            '_rlnDefocusAngle',
+            'DefocusAngle',
             'resolution_limit_defocus',
             'resolution_limit_defocus_astig',
             'nyquist',
-            '_rlnCtfMaxResolution',
-            '_rlnAmplitudeContrast',
-            '_rlnPhaseShift',
+            'CtfMaxResolution',
+            'AmplitudeContrast',
+            'PhaseShift',
             )
         data_output = [[
             2,
