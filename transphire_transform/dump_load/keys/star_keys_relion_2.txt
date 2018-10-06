@@ -1,3 +1,4 @@
+STAR_PREFIX:rln # This is used for internal transphire_transform puposes
 Comment #A metadata comment (This is treated in a special way))
 
 AreaId #ID (i.e. a unique number) of an area (i.e. field-of-view))
