@@ -36,30 +36,48 @@ class TestCreateHeader:
         """
         """
         header = ['a', 'b', 'c', 'd']
-        assert util.create_header(names=header, index=False) == header
+        header_out = ['_a', '_b', '_c', '_d']
+        assert util.create_header(names=header, index=False, prefix='') == header_out
 
 
     def test_create_header_index_list(self):
         """
         """
         header = ['a', 'b', 'c', 'd']
-        header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-        assert util.create_header(names=header, index=True) == header_out
+        header_out = ['_a #1', '_b #2', '_c #3', '_d #4']
+        assert util.create_header(names=header, index=True, prefix='') == header_out
 
 
     def test_create_header_array(self):
         """
         """
         header = np.array(['a', 'b', 'c', 'd'], dtype=str)
-        assert util.create_header(names=header, index=False) == header.tolist()
+        header_out = ['_a', '_b', '_c', '_d']
+        assert util.create_header(names=header, index=False, prefix='') == header_out
 
 
     def test_create_header_index_array(self):
         """
         """
         header = np.array(['a', 'b', 'c', 'd'], dtype=str)
-        header_out = ['a #1', 'b #2', 'c #3', 'd #4']
-        assert util.create_header(names=header, index=True) == header_out
+        header_out = ['_a #1', '_b #2', '_c #3', '_d #4']
+        assert util.create_header(names=header, index=True, prefix='') == header_out
+
+
+    def test_create_header_array_prefix(self):
+        """
+        """
+        header = np.array(['a', 'b', 'c', 'd'], dtype=str)
+        header_out = ['_testa', '_testb', '_testc', '_testd']
+        assert util.create_header(names=header, index=False, prefix='test') == header_out
+
+
+    def test_create_header_index_array_prefix(self):
+        """
+        """
+        header = np.array(['a', 'b', 'c', 'd'], dtype=str)
+        header_out = ['_testa #1', '_testb #2', '_testc #3', '_testd #4']
+        assert util.create_header(names=header, index=True, prefix='test') == header_out
 
 
     def test_create_header_array_empty(self):
@@ -67,7 +85,7 @@ class TestCreateHeader:
         """
         header = np.array([], dtype=str)
         with pytest.raises(IOError):
-            util.create_header(names=header, index=True)
+            util.create_header(names=header, index=True, prefix='')
 
 
     def test_create_header_list_empty(self):
@@ -75,7 +93,7 @@ class TestCreateHeader:
         """
         header = []
         with pytest.raises(IOError):
-            util.create_header(names=header, index=True)
+            util.create_header(names=header, index=True, prefix='')
 
 
 class TestDumpFile:

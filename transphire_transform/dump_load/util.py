@@ -26,7 +26,7 @@ import typing
 import pandas as pd # type: ignore
 
 
-def create_header(names: typing.List[str], index: bool) -> typing.List[str]:
+def create_header(names: typing.List[str], index: bool, prefix: str) -> typing.List[str]:
     """
     Create header for output file.
     An IOError is raised, if the output list is empty.
@@ -34,6 +34,7 @@ def create_header(names: typing.List[str], index: bool) -> typing.List[str]:
     Arguments:
     names - Header names
     index - Create indexed header
+    prefix - Star file header name prefix
 
     Returns:
     List of header entries
@@ -41,10 +42,10 @@ def create_header(names: typing.List[str], index: bool) -> typing.List[str]:
     output_list: typing.List[str] = []
     if index:
         for idx, name in enumerate(names):
-            output_list.append(f'{name} #{idx+1}')
+            output_list.append(f'_{prefix}{name} #{idx+1}')
     else:
         for name in names:
-            output_list.append(name)
+            output_list.append(f'_{prefix}{name}')
 
     if not output_list:
         raise IOError('Cannot create header from empty sequence')
@@ -159,19 +160,21 @@ def parse_keys_to_dict(keys: typing.Tuple[str, ...], export: bool=False) -> typi
     output_dict: typing.Dict[str, str]
     dict_key: str
     dict_value: str
+    raw_key: str
+    raw_value: str
 
     output_dict = {}
     for key in keys:
         try:
-            dict_key, dict_value = key.split(':')
+            raw_key, raw_value = key.split(':')
         except ValueError:
-            dict_key = key
-            dict_value = key
+            dict_key = key.strip()
+            dict_value = key.strip()
         else:
-            if export:
-                dict_key, dict_value = dict_value, dict_key
+            if raw_key == 'STAR_PREFIX' or not export:
+                dict_key, dict_value = raw_key.strip(), raw_value.strip()
             else:
-                pass
+                dict_key, dict_value = raw_value.strip(), raw_key.strip()
         assert dict_key not in output_dict
         output_dict[dict_key] = dict_value
 
