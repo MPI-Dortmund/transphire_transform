@@ -48,12 +48,12 @@ class TestGetCtffind4HeaderNames:
 
     def test_call_functions_returns_list(self):
         values = [
-            'defocus_u',
-            'defocus_v',
-            'astigmatism_angle',
-            'phase_shift',
-            'cross_correlation',
-            'resolution_limit',
+            '_rlnDefocusU',
+            '_rlnDefocusV',
+            '_rlnDefocusAngle',
+            '_rlnPhaseShift',
+            '_rlnCtfFigureOfMerit',
+            '_rlnCtfMaxResolution',
             ]
         assert ctffind.get_ctffind4_header_names() == values
 
@@ -64,7 +64,14 @@ class TestGetCtffind4Meta:
         apix, kv, cs, ac, file_name, version = ctffind4_meta
         data_frame = pd.DataFrame(
             [[version, file_name, apix, kv, cs, ac]],
-            columns=('version', 'micrograph_name', 'pixel_size', 'kv', 'cs', 'ac')
+            columns=(
+                'version',
+                '_rlnMicrographNameNoDW',
+                '_rlnPixelSize',
+                '_rlnVoltage',
+                '_rlnSphericalAberration',
+                '_rlnAmplitudeContrast'
+                )
             )
         return_frame = ctffind.get_ctffind4_meta(ctffind4_file)
         assert data_frame.equals(return_frame)
@@ -80,18 +87,18 @@ class TestLoadCtffind4:
         apix, kv, cs, ac, file_name, version = ctffind4_meta
         def_1, def_2, ast_ang, vpp, cc, limit = ctffind4_data
         columns = (
-            'defocus_u',
-            'defocus_v',
-            'astigmatism_angle',
-            'phase_shift',
-            'cross_correlation',
-            'resolution_limit',
+            '_rlnDefocusU',
+            '_rlnDefocusV',
+            '_rlnDefocusAngle',
+            '_rlnPhaseShift',
+            '_rlnCtfFigureOfMerit',
+            '_rlnCtfMaxResolution',
             'version',
-            'micrograph_name',
-            'pixel_size',
-            'kv',
-            'cs',
-            'ac'
+            '_rlnMicrographNameNoDW',
+            '_rlnPixelSize',
+            '_rlnVoltage',
+            '_rlnSphericalAberration',
+            '_rlnAmplitudeContrast'
             )
         data = [
             def_1,
