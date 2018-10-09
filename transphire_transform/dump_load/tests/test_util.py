@@ -368,3 +368,28 @@ class TestParseKeysToDict:
         data_output = {'test2': 'test'}
         data_return = util.parse_keys_to_dict(data, True)
         assert data_output == data_return
+
+
+class TestAddToDict():
+
+    def test_new_key_should_return_filled_dict(self):
+        data_dict = {}
+        key = 'a'
+        value = 'b'
+        util.add_to_dict(data_dict, key, value)
+        assert data_dict == {'a': 'b'}
+
+    def test_new_key_should_return_filled_dict(self):
+        data_dict = {}
+        key = 'a'
+        value = 1
+        util.add_to_dict(data_dict, key, value)
+        assert data_dict == {'a': 1}
+
+    def test_double_key_should_attributeerror(self):
+        data_dict = {'a': 'c'}
+        key = 'a'
+        value = 'b'
+        with pytest.raises(AttributeError):
+            util.add_to_dict(data_dict, key, value)
+

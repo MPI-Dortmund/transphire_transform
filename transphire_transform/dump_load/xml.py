@@ -18,8 +18,10 @@
 
 
 import typing
-import xml.etree.ElementTree as et
 import re
+import xml.etree.ElementTree as et
+
+from . import util
 
 
 def get_key_without_prefix(key: str) -> str:
@@ -42,26 +44,6 @@ def get_key_without_prefix(key: str) -> str:
     else:
         return_key = xml_key_match.group(1)
     return return_key.strip().strip('_')
-
-
-def add_to_dict(data_dict: typing.Dict[str, str], key: str, value: str) -> None:
-    """
-    Add key, value pair to dictionary.
-    Raise an AttributeError in case the key already exists in the dictionary.
-
-    Arguments:
-    data_dict - Dictionary that needs to be filled
-    key - Key that needs to be added
-    value - Value that needs to be added related to the key
-
-    Returns:
-    None
-    """
-    if key.strip() in data_dict:
-        raise AttributeError(f'Key: {key} already exists in data_dict!')
-    else:
-        data_dict[key.strip()] = value.strip()
-    return None
 
 
 def get_all_key_value(
@@ -146,7 +128,7 @@ def fill_key_value_dict(
     for entry_key, entry_value in zip(findall_key, findall_value):
         if entry_value.text:
             assert entry_key.text is not None
-            add_to_dict(data_dict, entry_key.text, entry_value.text)
+            util.add_to_dict(data_dict, entry_key.text, entry_value.text)
         else:
             child_values.append(entry_value)
 
@@ -178,8 +160,8 @@ def dose_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]) 
             break
 
     if start is not None and end is not None:
-        add_to_dict(data_dict, 'NumberOffractions', str(len(node)))
-        add_to_dict(data_dict, 'FramesPerFraction', str(int(end.strip()) - int(start.strip()) + 1))
+        util.add_to_dict(data_dict, 'NumberOffractions', str(len(node)))
+        util.add_to_dict(data_dict, 'FramesPerFraction', str(int(end.strip()) - int(start.strip()) + 1))
     return None
 
 
@@ -195,8 +177,8 @@ def number_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]
     None
     """
     assert node.text is not None
-    add_to_dict(data_dict, 'NumberOffractions', str(int(node.text.strip())))
-    add_to_dict(data_dict, 'FramesPerFraction', '1')
+    util.add_to_dict(data_dict, 'NumberOffractions', str(int(node.text.strip())))
+    util.add_to_dict(data_dict, 'FramesPerFraction', '1')
     return None
 
 
@@ -224,7 +206,7 @@ def get_level_0_xml(
     if key == node.tag:
         dict_key = get_key_without_prefix(node.tag)
         if node.text:
-            add_to_dict(data_dict, dict_key, node.text)
+            util.add_to_dict(data_dict, dict_key, node.text)
     else:
         pass
 
@@ -269,7 +251,7 @@ def get_level_1_xml(
             for key_check in search_keys_no_prefix:
                 if key_check == key_2:
                     assert child.text is not None
-                    add_to_dict(data_dict, combined_key, child.text)
+                    util.add_to_dict(data_dict, combined_key, child.text)
     else:
         pass
 
@@ -330,7 +312,7 @@ def get_level_3_xml(
                 for key_check in search_keys_no_prefix:
                     if key_check == test_tag:
                         assert grand_child.text is not None
-                        add_to_dict(data_dict, combined_key, grand_child.text)
+                        util.add_to_dict(data_dict, combined_key, grand_child.text)
     else:
         pass
 

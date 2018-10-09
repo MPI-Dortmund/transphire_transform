@@ -39,7 +39,7 @@ class TestGetAllKeyValue():
         doc2.text = '1.0'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, [value], data_dict)
+        xml.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'Dose': '1.0'}
 
@@ -49,7 +49,7 @@ class TestGetAllKeyValue():
         root = et.Element('root')
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, [value], data_dict)
+        xml.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {}
 
@@ -68,7 +68,7 @@ class TestGetAllKeyValue():
         doc5.text = '0'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, [value], data_dict)
+        xml.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '3'}
 
@@ -83,7 +83,7 @@ class TestGetAllKeyValue():
         doc3.text = '3'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, [value], data_dict)
+        xml.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {'NumberOffractions': '3', 'FramesPerFraction': '1'}
 
@@ -99,7 +99,7 @@ class TestGetAllKeyValue():
         doc3.text = '3'
 
         data_dict = {}
-        xml_epu.get_all_key_value(root, key, [value], data_dict)
+        xml.get_all_key_value(root, key, [value], data_dict)
 
         assert data_dict == {}
 
@@ -118,7 +118,7 @@ class TestGetAllKeyValue():
 
         data_dict = {}
         with pytest.raises(AttributeError):
-            xml_epu.get_all_key_value(root, key, [value], data_dict)
+            xml.get_all_key_value(root, key, [value], data_dict)
 
     def test_unequal_key_value_number_should_raise_assertionerror(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -133,7 +133,7 @@ class TestGetAllKeyValue():
 
         data_dict = {}
         with pytest.raises(AssertionError):
-            xml_epu.get_all_key_value(root, key, [value], data_dict)
+            xml.get_all_key_value(root, key, [value], data_dict)
 
 
 class TestFillKeyValueDict():
@@ -150,7 +150,7 @@ class TestFillKeyValueDict():
         data_dict = {}
         findall_key = root.findall(key)
         findall_value = root.findall(value)
-        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+        xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
         assert data_dict == {'foo': '1'}
 
@@ -170,7 +170,7 @@ class TestFillKeyValueDict():
         data_dict = {}
         findall_key = root.findall(key)
         findall_value = root.findall(value)
-        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+        xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
         assert data_dict == {'foo': '1', 'boo': '2'}
 
@@ -182,7 +182,7 @@ class TestFillKeyValueDict():
         data_dict = {}
         findall_key = root.findall(key)
         findall_value = root.findall(value)
-        xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+        xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
         assert data_dict == {}
 
@@ -202,7 +202,7 @@ class TestFillKeyValueDict():
         findall_value = root.findall(value)
 
         with pytest.raises(AssertionError):
-            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+            xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
     def test_two_key_one_value_should_raise_assertion_error(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -220,7 +220,7 @@ class TestFillKeyValueDict():
         findall_value = root.findall(value)
 
         with pytest.raises(AssertionError):
-            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+            xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
     def test_one_empty_key_one_value_should_raise_assertion_error(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -234,7 +234,7 @@ class TestFillKeyValueDict():
         findall_key = root.findall(key)
         findall_value = root.findall(value)
         with pytest.raises(AssertionError):
-            xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict)
+            xml.fill_key_value_dict(findall_key, findall_value, data_dict)
 
     def test_one_key_one_value_should_return_empty_list(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -248,7 +248,7 @@ class TestFillKeyValueDict():
         data_dict = {}
         findall_key = root.findall(key)
         findall_value = root.findall(value)
-        assert xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict) == []
+        assert xml.fill_key_value_dict(findall_key, findall_value, data_dict) == []
 
     def test_one_key_one_empty_value_should_return_filled_list(self):
         key = '{http://schemas.microsoft.com/2003/10/Serialization/Arrays}Key'
@@ -261,7 +261,7 @@ class TestFillKeyValueDict():
         data_dict = {}
         findall_key = root.findall(key)
         findall_value = root.findall(value)
-        assert xml_epu.fill_key_value_dict(findall_key, findall_value, data_dict) == [doc2]
+        assert xml.fill_key_value_dict(findall_key, findall_value, data_dict) == [doc2]
 
 
 class TestDoseFracNestedValues():
@@ -277,7 +277,7 @@ class TestDoseFracNestedValues():
         doc2.text = '1'
 
         data_dict = {}
-        xml_epu.dose_frac_nested_values(root, data_dict)
+        xml.dose_frac_nested_values(root, data_dict)
 
         assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '1'}
 
@@ -290,7 +290,7 @@ class TestDoseFracNestedValues():
         doc1.text = '1'
 
         data_dict = {}
-        xml_epu.dose_frac_nested_values(root, data_dict)
+        xml.dose_frac_nested_values(root, data_dict)
 
         assert data_dict == {}
 
@@ -303,7 +303,7 @@ class TestDoseFracNestedValues():
         doc1.text = '1'
 
         data_dict = {}
-        xml_epu.dose_frac_nested_values(root, data_dict)
+        xml.dose_frac_nested_values(root, data_dict)
 
         assert data_dict == {}
 
@@ -319,7 +319,7 @@ class TestDoseFracNestedValues():
 
         data_dict = {}
         with pytest.raises(ValueError):
-            xml_epu.dose_frac_nested_values(root, data_dict)
+            xml.dose_frac_nested_values(root, data_dict)
 
     def test_end_tag_not_int_should_raise_valueerror(self):
         key1 = 'StartFrameNumber'
@@ -333,7 +333,7 @@ class TestDoseFracNestedValues():
 
         data_dict = {}
         with pytest.raises(ValueError):
-            xml_epu.dose_frac_nested_values(root, data_dict)
+            xml.dose_frac_nested_values(root, data_dict)
 
     def test_end_and_start_tag_not_int_should_raise_valueerror(self):
         key1 = 'StartFrameNumber'
@@ -347,7 +347,7 @@ class TestDoseFracNestedValues():
 
         data_dict = {}
         with pytest.raises(ValueError):
-            xml_epu.dose_frac_nested_values(root, data_dict)
+            xml.dose_frac_nested_values(root, data_dict)
 
 
 class TestNumberFracNestedValues():
@@ -357,7 +357,7 @@ class TestNumberFracNestedValues():
         root.text = '1'
 
         data_dict = {}
-        xml_epu.number_frac_nested_values(root, data_dict)
+        xml.number_frac_nested_values(root, data_dict)
 
         assert data_dict == {'NumberOffractions': '1', 'FramesPerFraction': '1'}
 
@@ -366,7 +366,7 @@ class TestNumberFracNestedValues():
 
         data_dict = {}
         with pytest.raises(AssertionError):
-            xml_epu.number_frac_nested_values(root, data_dict)
+            xml.number_frac_nested_values(root, data_dict)
 
     def test_value_no_int_should_raise_valueerror(self):
         root = et.Element('root')
@@ -374,7 +374,7 @@ class TestNumberFracNestedValues():
 
         data_dict = {}
         with pytest.raises(ValueError):
-            xml_epu.number_frac_nested_values(root, data_dict)
+            xml.number_frac_nested_values(root, data_dict)
 
 
 class TestGetLevel0Xml():
@@ -386,7 +386,7 @@ class TestGetLevel0Xml():
         doc1.text = 'foo'
 
         data_dict = {}
-        xml_epu.get_level_0_xml(doc1, key, [], data_dict)
+        xml.get_level_0_xml(doc1, key, [], data_dict)
 
         assert data_dict == {'TestRun': 'foo'}
 
@@ -397,7 +397,7 @@ class TestGetLevel0Xml():
         doc1.text = 'foo'
 
         data_dict = {}
-        xml_epu.get_level_0_xml(root, key, [], data_dict)
+        xml.get_level_0_xml(root, key, [], data_dict)
 
         assert data_dict == {}
 
@@ -408,9 +408,9 @@ class TestGetLevel0Xml():
         doc1.text = 'foo'
 
         data_dict = {}
-        xml_epu.get_level_0_xml(doc1, key, [], data_dict)
+        xml.get_level_0_xml(doc1, key, [], data_dict)
         with pytest.raises(AttributeError):
-            xml_epu.get_level_0_xml(doc1, key, [], data_dict)
+            xml.get_level_0_xml(doc1, key, [], data_dict)
 
 
 class TestGetLevel1Xml():
@@ -427,7 +427,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -443,7 +443,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -459,7 +459,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -475,7 +475,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -500,7 +500,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -525,7 +525,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -550,7 +550,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -575,7 +575,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -600,7 +600,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -625,7 +625,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -650,7 +650,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00', 'TestRun_y': '2.00', 'TestRun_z': '3.00'}
 
@@ -673,7 +673,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -696,7 +696,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'TestRun_x': '1.00'}
 
@@ -719,7 +719,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_1_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -742,7 +742,7 @@ class TestGetLevel1Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_1_xml(doc1, 'does not exists', search_keys, data_dict)
+        xml.get_level_1_xml(doc1, 'does not exists', search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -763,7 +763,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'test1_test2': '1.00'}
 
@@ -781,7 +781,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'test1_test2': '1.00'}
 
@@ -799,7 +799,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'test1_test2': '1.00'}
 
@@ -817,7 +817,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {'test1_test2': '1.00'}
 
@@ -842,7 +842,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, 'not known', search_keys, data_dict)
+        xml.get_level_3_xml(doc1, 'not known', search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -863,7 +863,7 @@ class TestGetLevel3Xml():
         doc2 = et.SubElement(doc1, 'test1')
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -885,7 +885,7 @@ class TestGetLevel3Xml():
         doc3 = et.SubElement(doc2, 'test2')
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -910,7 +910,7 @@ class TestGetLevel3Xml():
             doc.text = entry2
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {}
 
@@ -934,48 +934,32 @@ class TestGetLevel3Xml():
         doc5 = et.SubElement(doc4, 'test4')
 
         data_dict = {}
-        xml_epu.get_level_3_xml(doc1, key, search_keys, data_dict)
+        xml.get_level_3_xml(doc1, key, search_keys, data_dict)
 
         assert data_dict == {}
 
-
-class TestAddToDict():
-
-    def test_new_key_should_return_filled_dict(self):
-        data_dict = {}
-        key = 'a'
-        value = 'b'
-        xml_epu.add_to_dict(data_dict, key, value)
-        assert data_dict == {'a': 'b'}
-
-    def test_double_key_should_attributeerror(self):
-        data_dict = {'a': 'c'}
-        key = 'a'
-        value = 'b'
-        with pytest.raises(AttributeError):
-            xml_epu.add_to_dict(data_dict, key, value)
 
 class TestGetKeyWithouPrefix():
 
     def test_key_with_prefix_should_return_key_without_prefix(self):
         key = '{prefix}test'
-        assert xml_epu.get_key_without_prefix(key) == 'test'
+        assert xml.get_key_without_prefix(key) == 'test'
 
     def test_key_without_prefix_should_return_key_without_prefix(self):
         key = 'test'
-        assert xml_epu.get_key_without_prefix(key) == 'test'
+        assert xml.get_key_without_prefix(key) == 'test'
 
     def test_key_with_leading_trailing_whitespaces_should_return_key_without_leading_trailing_whitespaces(self):
         key = '  test  '
-        assert xml_epu.get_key_without_prefix(key) == 'test'
+        assert xml.get_key_without_prefix(key) == 'test'
 
     def test_key_with_leading_trailing_underscore_should_return_key_without_leading_trailing_underscore(self):
         key = '__test__'
-        assert xml_epu.get_key_without_prefix(key) == 'test'
+        assert xml.get_key_without_prefix(key) == 'test'
 
     def test_key_with_mixed_leading_trailing_underscore_should_return_key_without_leading_trailing_underscore(self):
         key = ' __test__ '
-        assert xml_epu.get_key_without_prefix(key) == 'test'
+        assert xml.get_key_without_prefix(key) == 'test'
 
 
 class TestRecursiveNode():
@@ -983,10 +967,10 @@ class TestRecursiveNode():
     @pytest.fixture(scope='class')
     def level_func_dict(self):
         return {
-            'key_value': xml_epu.get_all_key_value,
-            'level 0': xml_epu.get_level_0_xml,
-            'level 1': xml_epu.get_level_1_xml,
-            'level 3': xml_epu.get_level_3_xml,
+            'key_value': xml.get_all_key_value,
+            'level 0': xml.get_level_0_xml,
+            'level 1': xml.get_level_1_xml,
+            'level 3': xml.get_level_3_xml,
             }
 
     @pytest.fixture(scope='class')
@@ -1030,7 +1014,7 @@ class TestRecursiveNode():
             }
         data_dict = {}
 
-        xml_epu.recursive_node(root, data_dict, level_dict, level_func_dict)
+        xml.recursive_node(root, data_dict, level_dict, level_func_dict)
 
         assert data_dict == {'key': 'value'}
 
@@ -1038,7 +1022,7 @@ class TestRecursiveNode():
         level_dict = {'level 0': {'sub_level_0': []}}
         data_dict = {}
 
-        xml_epu.recursive_node(root, data_dict, level_dict, level_func_dict)
+        xml.recursive_node(root, data_dict, level_dict, level_func_dict)
 
         assert data_dict == {'sub_level_0': 'sub_level_0'}
 
@@ -1046,7 +1030,7 @@ class TestRecursiveNode():
         level_dict = {'level 1': {'sub_level_1_0': ['sub_level_1_1']}}
         data_dict = {}
 
-        xml_epu.recursive_node(root, data_dict, level_dict, level_func_dict)
+        xml.recursive_node(root, data_dict, level_dict, level_func_dict)
 
         assert data_dict == {'sub_level_1_0_sub_level_1_1': 'sub_level_1_1'}
 
@@ -1054,7 +1038,7 @@ class TestRecursiveNode():
         level_dict = {'level 3': {'sub_level_3_0': ['sub_level_3_3']}}
         data_dict = {}
 
-        xml_epu.recursive_node(root, data_dict, level_dict, level_func_dict)
+        xml.recursive_node(root, data_dict, level_dict, level_func_dict)
 
         assert data_dict == {'sub_level_3_1_sub_level_3_2': 'sub_level_3_3'}
 
@@ -1098,8 +1082,8 @@ class TestReadXML():
         return level_dict
 
     def test_epu_1_8_falcon_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_epu_1_8_falcon_2.xml")
-        data_dict = xml_epu.read_xml(file_name, level_dict)
+        file_name = os.path.join(THIS_DIR, "xml_1_8_falcon_2.xml")
+        data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
             'DoseOnCamera': '2777.1328318769706',
@@ -1150,8 +1134,8 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_11_falcon_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_epu_1_11_falcon.xml")
-        data_dict = xml_epu.read_xml(file_name, level_dict)
+        file_name = os.path.join(THIS_DIR, "xml_1_11_falcon.xml")
+        data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
             'DoseOnCamera': '369.58234062113087',
@@ -1203,8 +1187,8 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_11_falcon_vpp_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_epu_1_11_falcon_vpp.xml")
-        data_dict = xml_epu.read_xml(file_name, level_dict)
+        file_name = os.path.join(THIS_DIR, "xml_1_11_falcon_vpp.xml")
+        data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
             'DoseOnCamera': '351.43162212033525',
@@ -1258,8 +1242,8 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_8_k2_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_epu_1_8_k2.xml")
-        data_dict = xml_epu.read_xml(file_name, level_dict)
+        file_name = os.path.join(THIS_DIR, "xml_1_8_k2.xml")
+        data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
             'Dose': '4.4034254472809153E+21',
@@ -1309,8 +1293,8 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_9_k2_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_epu_1_9_k2.xml")
-        data_dict = xml_epu.read_xml(file_name, level_dict)
+        file_name = os.path.join(THIS_DIR, "xml_1_9_k2.xml")
+        data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
             'Dose': '5.0949700264944667E+21',

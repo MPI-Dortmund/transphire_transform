@@ -179,3 +179,26 @@ def parse_keys_to_dict(keys: typing.Tuple[str, ...], export: bool=False) -> typi
         output_dict[dict_key] = dict_value
 
     return output_dict
+
+
+def add_to_dict(data_dict: typing.Dict[str, str], key: str, value: str) -> None:
+    """
+    Add key, value pair to dictionary.
+    Raise an AttributeError in case the key already exists in the dictionary.
+
+    Arguments:
+    data_dict - Dictionary that needs to be filled
+    key - Key that needs to be added
+    value - Value that needs to be added related to the key
+
+    Returns:
+    None
+    """
+    if key.strip() in data_dict:
+        raise AttributeError(f'Key: {key} already exists in data_dict!')
+    else:
+        if isinstance(value, str):
+            data_dict[key.strip()] = value.strip()
+        else:
+            data_dict[key.strip()] = value
+    return None
