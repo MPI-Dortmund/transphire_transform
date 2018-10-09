@@ -21,7 +21,7 @@ import os
 import xml.etree.ElementTree as et
 import pytest
 
-from .. import xml_epu
+from .. import xml
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
