@@ -25,24 +25,21 @@ SOFTWARE.
 import typing
 
 import mrcfile
-import pandas as pd
+import pandas as pd # type: ignore
 
 from . import util
 
 
-def read_mrc_header(file_name: str) -> typing.Dict[str, str]:
+def read_mrc_header(file_name: str) -> pd.DataFrame:
     """
     Read the header of an mrc file.
 
     Arguments
     """
-    output_dict: typing.Dict[str, str]
+    output_data: pd.DataFrame
 
-    output_dict = {}
     with mrcfile.open(file_name) as mrc:
-        for name in mrc.header.dtype.names:
-            util.add_to_dict(output_dict, str(name), mrc.header[name])
-        for name in mrc.extended_header.dtype.names:
-            util.add_to_dict(output_dict, str(name), mrc.extended_header[name][0])
-    return output_dict
+        output_data = pd.DataFrame(mrc.extended_header)
+
+    return output_data.iloc[0]
 
