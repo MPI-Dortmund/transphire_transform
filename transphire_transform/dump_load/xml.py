@@ -21,6 +21,8 @@ import typing
 import re
 import xml.etree.ElementTree as et
 
+import pandas as pd # type: ignore
+
 from . import util
 
 
@@ -371,7 +373,7 @@ def recursive_node(
 def read_xml(
         file_name: str,
         level_dict: typing.Dict[str, typing.Dict[str, typing.List[str]]]
-    ) -> typing.Dict[str, str]:
+    ) -> pd.DataFrame:
     """
     Extract the xml information from the file.
 
@@ -380,7 +382,7 @@ def read_xml(
     level_dict - Dictionary containin the keys to extract
 
     Returns:
-    data_dict
+    Pandas data frame containing the information
     """
     level_func_dict: typing.Dict[
         str,
@@ -410,4 +412,5 @@ def read_xml(
         level_func_dict=level_func_dict
         )
 
-    return data_dict
+
+    return pd.DataFrame(data_dict, index=[0])

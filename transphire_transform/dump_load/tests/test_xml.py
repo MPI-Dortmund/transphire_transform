@@ -21,6 +21,8 @@ import os
 import xml.etree.ElementTree as et
 import pytest
 
+import pandas as pd
+
 from .. import xml
 
 
@@ -1132,7 +1134,7 @@ class TestReadXML():
             'pixelSize_y': '1.4558899918970525E-10',
             }
 
-        assert data_dict == return_dict
+        assert data_dict.equals(pd.DataFrame(return_dict, index=[0])[list(data_dict)])
 
     def test_epu_1_11_falcon_should_return_filled_dict(self, level_dict):
         file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_11_falcon.xml")
@@ -1185,7 +1187,7 @@ class TestReadXML():
             'BinaryResult.Detector': 'BM-Falcon',
             }
 
-        assert data_dict == return_dict
+        assert data_dict.equals(pd.DataFrame(return_dict, index=[0])[list(data_dict)])
 
     def test_epu_1_11_falcon_vpp_should_return_filled_dict(self, level_dict):
         file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_11_falcon_vpp.xml")
@@ -1240,7 +1242,7 @@ class TestReadXML():
             'BinaryResult.Detector': 'BM-Falcon',
             }
 
-        assert data_dict == return_dict
+        assert data_dict.equals(pd.DataFrame(return_dict, index=[0])[list(data_dict)])
 
     def test_epu_1_8_k2_should_return_filled_dict(self, level_dict):
         file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_8_k2.xml")
@@ -1291,7 +1293,7 @@ class TestReadXML():
             'pixelSize_y': '1.1202724164993683E-10',
             }
 
-        assert data_dict == return_dict
+        assert data_dict.equals(pd.DataFrame(return_dict, index=[0])[list(data_dict)])
 
     def test_epu_1_9_k2_should_return_filled_dict(self, level_dict):
         file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_9_k2.xml")
@@ -1342,5 +1344,5 @@ class TestReadXML():
             'pixelSize_y': '1.0732100624855079E-10',
             }
 
-        assert data_dict == return_dict
+        assert data_dict.equals(pd.DataFrame(return_dict, index=[0])[list(data_dict)])
 
