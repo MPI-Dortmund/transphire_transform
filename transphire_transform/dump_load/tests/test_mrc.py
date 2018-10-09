@@ -28,6 +28,7 @@ from .. import mrc
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
+INPUT_TEST_FOLDER = '../../../test_files'
 
 
 class TestReadMrcHeader:
@@ -35,29 +36,23 @@ class TestReadMrcHeader:
     def test_header_contains_phase_plate(self):
         """
         """
-        header = mrc.read_mrc_header(os.path.join(THIS_DIR, 'mrc_test.mrc'))
+        header = mrc.read_mrc_header(os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'mrc_test.mrc'))
         assert 'Phase Plate' in header
 
     def test_phase_plate_is_false(self):
         """
         """
-        header = mrc.read_mrc_header(os.path.join(THIS_DIR, 'mrc_test.mrc'))
+        header = mrc.read_mrc_header(os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'mrc_test.mrc'))
         assert not header['Phase Plate']
 
     def test_phase_plate_is_true(self):
         """
         """
-        header = mrc.read_mrc_header(os.path.join(THIS_DIR, 'mrc_vpp_test.mrc'))
+        header = mrc.read_mrc_header(os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'mrc_vpp_test.mrc'))
         assert header['Phase Plate']
 
     def test_file_does_not_exists_raises_IOError(self):
         """
         """
         with pytest.raises(IOError):
-            header = mrc.read_mrc_header(os.path.join(THIS_DIR, 'dummy'))
-
-    def test_phase_plate_is_true(self):
-        """
-        """
-        header = mrc.read_mrc_header(os.path.join(THIS_DIR, 'mrc_vpp_test.mrc'))
-        assert False
+            header = mrc.read_mrc_header(os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'dummy'))

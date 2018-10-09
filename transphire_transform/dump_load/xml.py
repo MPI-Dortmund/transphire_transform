@@ -161,7 +161,11 @@ def dose_frac_nested_values(node: et.Element, data_dict: typing.Dict[str, str]) 
 
     if start is not None and end is not None:
         util.add_to_dict(data_dict, 'NumberOffractions', str(len(node)))
-        util.add_to_dict(data_dict, 'FramesPerFraction', str(int(end.strip()) - int(start.strip()) + 1))
+        util.add_to_dict(
+            data_dict,
+            'FramesPerFraction',
+            str(int(end.strip()) - int(start.strip()) + 1)
+            )
     return None
 
 

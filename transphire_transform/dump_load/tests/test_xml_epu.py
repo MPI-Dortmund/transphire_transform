@@ -25,6 +25,7 @@ from .. import xml
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+INPUT_TEST_FOLDER = '../../../test_files'
 
 
 class TestGetAllKeyValue():
@@ -1082,7 +1083,7 @@ class TestReadXML():
         return level_dict
 
     def test_epu_1_8_falcon_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_1_8_falcon_2.xml")
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_8_falcon_2.xml")
         data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
@@ -1134,7 +1135,7 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_11_falcon_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_1_11_falcon.xml")
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_11_falcon.xml")
         data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
@@ -1187,7 +1188,7 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_11_falcon_vpp_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_1_11_falcon_vpp.xml")
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_11_falcon_vpp.xml")
         data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
@@ -1242,7 +1243,7 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_8_k2_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_1_8_k2.xml")
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_8_k2.xml")
         data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {
@@ -1293,7 +1294,7 @@ class TestReadXML():
         assert data_dict == return_dict
 
     def test_epu_1_9_k2_should_return_filled_dict(self, level_dict):
-        file_name = os.path.join(THIS_DIR, "xml_1_9_k2.xml")
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, "xml_1_9_k2.xml")
         data_dict = xml.read_xml(file_name, level_dict)
 
         return_dict = {

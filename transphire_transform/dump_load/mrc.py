@@ -22,19 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import typing
-
-import mrcfile
+import mrcfile # type: ignore
 import pandas as pd # type: ignore
-
-from . import util
 
 
 def read_mrc_header(file_name: str) -> pd.DataFrame:
     """
     Read the header of an mrc file.
 
-    Arguments
+    Arguments:
+    file_name - Name of the mrc file
+
+    Returns:
+    Pandas data frame containing the extended header information
     """
     output_data: pd.DataFrame
 
@@ -42,4 +42,3 @@ def read_mrc_header(file_name: str) -> pd.DataFrame:
         output_data = pd.DataFrame(mrc.extended_header)
 
     return output_data.iloc[0]
-

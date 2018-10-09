@@ -32,6 +32,7 @@ from .. import cter
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 OUTPUT_TEST_FOLDER = 'OUTPUT_TESTS_DUMP'
+INPUT_TEST_FOLDER = '../../../test_files'
 
 
 class TestGetCterV10HeaderNames:
@@ -67,7 +68,7 @@ class TestGetCterV10HeaderNames:
 class TestLoadCterV10:
 
     def test_correct_multiline_file_should_return_filled_data_frame(self):
-        file_name = os.path.join(THIS_DIR, 'cter_v1_0_multiline.txt')
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_multiline.txt')
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
@@ -126,7 +127,7 @@ class TestLoadCterV10:
         assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_should_return_filled_data_frame(self):
-        file_name = os.path.join(THIS_DIR, 'cter_v1_0.txt')
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0.txt')
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
@@ -185,7 +186,7 @@ class TestLoadCterV10:
         assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_low_angle_should_return_filled_data_frame(self):
-        file_name = os.path.join(THIS_DIR, 'cter_v1_0_low_angle.txt')
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_low_angle.txt')
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (
@@ -244,7 +245,7 @@ class TestLoadCterV10:
         assert data_frame.round(5).equals(return_frame.round(5))
 
     def test_correct_file_high_angle_should_return_filled_data_frame(self):
-        file_name = os.path.join(THIS_DIR, 'cter_v1_0_high_angle.txt')
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_high_angle.txt')
         return_frame = cter.load_cter_v1_0(file_name=file_name)
 
         columns = (

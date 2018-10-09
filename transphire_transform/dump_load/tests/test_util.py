@@ -379,7 +379,7 @@ class TestAddToDict():
         util.add_to_dict(data_dict, key, value)
         assert data_dict == {'a': 'b'}
 
-    def test_new_key_should_return_filled_dict(self):
+    def test_new_key_int_should_return_filled_dict(self):
         data_dict = {}
         key = 'a'
         value = 1
