@@ -31,10 +31,11 @@ import pytest
 from .. import ctffind
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+INPUT_TEST_FOLDER = '../../../test_files'
 
 @pytest.fixture('module')
 def ctffind4_file():
-    return os.path.join(THIS_DIR, 'ctffind.txt')
+    return os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'ctffind.txt')
 
 @pytest.fixture('module')
 def ctffind4_meta():
@@ -78,7 +79,7 @@ class TestGetCtffind4Meta:
 
     def test_corrupt_file_should_raise_assertionerror(self):
         with pytest.raises(AssertionError):
-            return_frame = ctffind.get_ctffind4_meta(os.path.join(THIS_DIR, 'ctffind_corrupt.txt'))
+            return_frame = ctffind.get_ctffind4_meta(os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'ctffind_corrupt.txt'))
 
 
 class TestLoadCtffind4:
@@ -122,7 +123,7 @@ class TestLoadCtffind4:
         assert data_frame.equals(return_frame.round(6))
 
     def test_corrupt_file_should_raise_assertionerror(self):
-        ctffind4_file = os.path.join(THIS_DIR, 'ctffind_corrupt.txt')
+        ctffind4_file = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'ctffind_corrupt.txt')
         with pytest.raises(AssertionError):
             return_frame = ctffind.load_ctffind4(ctffind4_file)
 
