@@ -1392,3 +1392,283 @@ class TestCterToIntern:
 
         cter.cter_to_intern(data_frame)
         assert return_frame.equals(data_frame.round(6))
+
+
+class TestLoadCter:
+
+    def test_version_1_0_should_return_version_1_0(self):
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_multiline.txt')
+        return_frame = cter.load_cter(file_name=file_name, version='1.0')
+
+        columns = (
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
+            'b_factor',
+            'total_ac',
+            'DefocusAngle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit_defocus_astig',
+            'nyquist',
+            'CtfMaxResolution',
+            'spare',
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
+            )
+        data = [[
+            22257.635,
+            22862.365,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            2.307018,
+            2.779399,
+            2.279982,
+            2.279982,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]] * 2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_version_1_1_should_return_version_1_0(self):
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_multiline.txt')
+        return_frame = cter.load_cter(file_name=file_name, version='1.1')
+
+        columns = (
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
+            'b_factor',
+            'total_ac',
+            'DefocusAngle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit_defocus_astig',
+            'nyquist',
+            'CtfMaxResolution',
+            'spare',
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
+            )
+        data = [[
+            22257.635,
+            22862.365,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            2.307018,
+            2.779399,
+            2.279982,
+            2.279982,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]] * 2
+        data_frame = pd.DataFrame(
+            data,
+            columns=columns
+            )
+
+        assert data_frame.round(5).equals(return_frame.round(5))
+
+    def test_version_0_1_should_raise_AssertionError(self):
+        file_name = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'cter_v1_0_multiline.txt')
+        with pytest.raises(AssertionError):
+            cter.load_cter(file_name=file_name, version='0.0')
+
+
+class TestDumpCter:
+
+    def test_valid_cter_data_version_1_0_should_create_partres_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_should_create_partres_file.star')
+        columns = (
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
+            'b_factor',
+            'total_ac',
+            'DefocusAngle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit_defocus_astig',
+            'nyquist',
+            'CtfMaxResolution',
+            'spare',
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
+            )
+        data = [
+            22257.635,
+            22862.365,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.43346,
+            0.35979,
+            0.4386,
+            0.4386,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter(output_file, data_frame, '1.0')
+        assert os.path.exists(output_file)
+
+    def test_valid_cter_data_1_0_large_angle_should_create_correct_file(self, tmpdir):
+        output_file: str = tmpdir.mkdir(OUTPUT_TEST_FOLDER).join('test_valid_cter_data_large_angle_should_create_correct_file.star')
+        columns = (
+            'DefocusU',
+            'DefocusV',
+            'SphericalAberration',
+            'Voltage',
+            'PixelSize',
+            'b_factor',
+            'total_ac',
+            'DefocusAngle',
+            'std_defocus',
+            'std_total_ac',
+            'std_astigmatism_amplitude',
+            'std_astigmatism_angle',
+            'variation_defocus',
+            'variation_astigmatism_amplitude',
+            'resolution_limit_defocus',
+            'resolution_limit_defocus_astig',
+            'nyquist',
+            'CtfMaxResolution',
+            'spare',
+            'AmplitudeContrast',
+            'PhaseShift',
+            'MicrographNameNoDW'
+            )
+        data = [
+            22257.635,
+            22862.365,
+            0.01,
+            300,
+            1.14,
+            0,
+            0.1,
+            19.435+720,
+            0.0010212,
+            0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            2.30702,
+            2.77940,
+            2.27998,
+            2.77940,
+            0,
+            0.1,
+            0,
+            'test_file.mrc'
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        cter.dump_cter(output_file, data_frame, '1.0')
+
+        expected_data = [[
+            2.256,
+            0.01,
+            300.0,
+            1.14,
+            0.0,
+            10.0,
+            0.060473,
+            25.565 ,
+            0.0010212,
+            0.0,
+            0.0021005,
+            6.5849,
+            0.045268,
+            3.4734,
+            0.4334596,
+            0.3597899,
+            0.4386003,
+            0.3597899,
+            0.0,
+            10.0,
+            0.0,
+            'test_file.mrc',
+            ]]
+        input_data = []
+        with open(output_file, 'r') as read:
+            for idx, line in enumerate(read.readlines()):
+                line = line.strip().split()
+                input_data.append([])
+                for entry in line:
+                    try:
+                        data = float(entry)
+                    except ValueError:
+                        data = entry
+                    input_data[idx].append(data)
+
+        assert expected_data == input_data

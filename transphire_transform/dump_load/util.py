@@ -209,7 +209,7 @@ def extract_function_from_function_dict(
             str,
             typing.Callable[..., typing.Any]
             ],
-        version: typing.Optional[str]
+        version: typing.Optional[str]=None
     ) -> typing.Callable[..., typing.Any]:
     """
     Get the correct function from the function dict based on the version.
@@ -222,35 +222,37 @@ def extract_function_from_function_dict(
     Returns:
     function
     """
-    function: typing.Callable[..., typing.Any]
-    version_numbers: typing.List[int]
-    version_match: typing.Optional[str]
-    is_smaller: bool
+    version_list: typing.List[typing.Tuple[int, ...]]
+    match_version: typing.Tuple[int, ...]
+    version_number: typing.Tuple[int, ...]
+    current_version: typing.Tuple[int, ...]
+    sorted_version_list: typing.List[typing.Tuple[int, ...]]
+    idx_version: int
+
+    version_list = []
+    for key in function_dict:
+        current_version = tuple([int(num) for num in key.split('.')])
+        version_list.append(current_version)
+        assert len(version_list[0]) == len(current_version)
 
     if version is None:
-        function = list(function_dict.values())[-1]
+        match_version = max(version_list)
 
     else:
-        version_numbers = [int(num) for num in version.split('.')]
-        version_match = None
+        version_number = tuple([int(num) for num in version.split('.')])
+        assert len(version_number) == len(version_list[0]), \
+            f'Version {version} not in the format {list(function_dict.keys())[0]}'
+        version_list.append(version_number)
+        sorted_version_list = sorted(version_list)
+        idx_version = sorted_version_list.index(version_number)
 
-        for key in function_dict:
-            key_numbers = [int(num) for num in key.split('.')]
-            assert len(version_numbers) == len(key_numbers)
-            is_smaller = False
-            for version_number, key_number in zip(version_numbers, key_numbers):
-                if version_number < key_number:
-                    is_smaller = True
-                    break
-            if is_smaller:
-                continue
-            else:
-                version_match = key
-                break
-
-        if version_match is not None:
-            function = function_dict[version_match]
+        if idx_version == len(sorted_version_list)-1:
+            match_version = sorted_version_list[idx_version-1]
+        elif version_number == sorted_version_list[idx_version+1]:
+            match_version = sorted_version_list[idx_version]
+        elif idx_version == 0:
+            assert False, f'Version {version} is too small and does not fit any key!'
         else:
-            assert 'Version number too small', version
+            match_version = sorted_version_list[idx_version-1]
 
-    return function
+    return function_dict['.'.join([str(entry) for entry in match_version])]

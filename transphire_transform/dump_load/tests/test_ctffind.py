@@ -127,3 +127,48 @@ class TestLoadCtffind410:
         with pytest.raises(AssertionError):
             return_frame = ctffind.load_ctffind_4_1_0(ctffind_4_1_0_file)
 
+class TestLoadCtffind:
+
+    def test_correct_file_4_1_0_should_return_filled_data_frame(self, ctffind_4_1_0_meta, ctffind_4_1_0_file, ctffind_4_1_0_data):
+        apix, kv, cs, ac, file_name, version = ctffind_4_1_0_meta
+        def_1, def_2, ast_ang, vpp, cc, limit = ctffind_4_1_0_data
+        columns = (
+            'DefocusU',
+            'DefocusV',
+            'DefocusAngle',
+            'PhaseShift',
+            'CtfFigureOfMerit',
+            'CtfMaxResolution',
+            'version',
+            'MicrographNameNoDW',
+            'PixelSize',
+            'Voltage',
+            'SphericalAberration',
+            'AmplitudeContrast'
+            )
+        data = [
+            def_1,
+            def_2,
+            ast_ang,
+            vpp,
+            cc,
+            limit,
+            version,
+            file_name,
+            apix,
+            kv,
+            cs,
+            ac
+            ]
+        data_frame = pd.DataFrame(
+            [data],
+            columns=columns
+            )
+        return_frame = ctffind.load_ctffind(ctffind_4_1_0_file, '4.1.0')
+        assert data_frame.equals(return_frame.round(6))
+
+    def test_corrupt_file_should_raise_assertionerror(self):
+        ctffind_4_1_0_file = os.path.join(THIS_DIR, INPUT_TEST_FOLDER, 'ctffind_corrupt.txt')
+        with pytest.raises(AssertionError):
+            return_frame = ctffind.load_ctffind_4_1_0(ctffind_4_1_0_file)
+
