@@ -45,7 +45,7 @@ def load_eman1(file_name: str) -> pd.DataFrame:
     output_data = util.load_file(
         file_name,
         names=['CoordinateX', 'CoordinateY', 'box_x', 'box_y'],
-        comments='#',
+        comment='#',
         )
     output_data['CoordinateX'] += output_data['box_x'] // 2
     output_data['CoordinateY'] += output_data['box_y'] // 2
@@ -55,7 +55,7 @@ def load_eman1(file_name: str) -> pd.DataFrame:
 
 def load_box(
         file_name: str,
-        version: typing.Optional[str]=None
+        version: str
     ) -> pd.DataFrame:
     """
     Load the box file based on the version
