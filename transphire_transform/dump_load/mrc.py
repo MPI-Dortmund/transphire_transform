@@ -26,7 +26,7 @@ import mrcfile # type: ignore
 import pandas as pd # type: ignore
 
 
-def read_mrc_header(file_name: str) -> pd.DataFrame:
+def load_mrc_header(file_name: str) -> pd.DataFrame:
     """
     Read the header of an mrc file.
 
