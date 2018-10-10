@@ -66,6 +66,38 @@ def get_cter_v1_0_header_names() -> typing.List[str]:
         ]
 
 
+def load_cter(
+        file_name: str,
+        version: typing.Optional[str]=None
+    ) -> None:
+    """
+    Create a cter partres file based on the cter_data information.
+    By default, the latest cter version is assumed.
+
+    Arguments:
+    file_name - Path to the output partres file.
+    version - Cter version default the latest version
+
+    Returns:
+    None
+    """
+    function_dict: typing.Dict[
+        str,
+        typing.Callable[
+            [str],
+            pd.DataFrame
+            ]
+        ]
+    function: typing.Callable[[str], pd.DataFrame]
+
+    function_dict = {
+        '1.0': load_cter_v1_0,
+        }
+
+    function = util.extract_function_from_function_dict(function_dict, version)
+    return function(file_name)
+
+
 def load_cter_v1_0(file_name: str) -> pd.DataFrame:
     """
     Load a ctffind file.
@@ -88,6 +120,40 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
     defocus_data, cter_data_dropped = cter_to_intern(cter_data=cter_data)
 
     return pd.concat([defocus_data, cter_data_dropped], axis=1)
+
+
+def dump_cter(
+        file_name: str,
+        cter_data: pd.DataFrame,
+        version: typing.Optional[str]=None
+    ) -> None:
+    """
+    Create a cter partres file based on the cter_data information.
+    By default, the latest cter version is assumed.
+
+    Arguments:
+    file_name - Path to the output partres file.
+    cter_data - Pandas data frame containing ctf information.
+    version - Cter version default the latest version
+
+    Returns:
+    None
+    """
+    function_dict: typing.Dict[
+        str,
+        typing.Callable[
+            [str, pd.DataFrame],
+            None
+            ]
+        ]
+    function: typing.Callable[[str, pd.DataFrame], None]
+
+    function_dict = {
+        '1.0': dump_cter_v1_0,
+        }
+
+    function = util.extract_function_from_function_dict(function_dict, version)
+    return function(file_name, cter_data)
 
 
 def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:

@@ -370,7 +370,7 @@ def recursive_node(
     return None
 
 
-def read_xml(
+def load_xml(
         file_name: str,
         level_dict: typing.Dict[str, typing.Dict[str, typing.List[str]]]
     ) -> pd.DataFrame:

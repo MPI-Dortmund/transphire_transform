@@ -393,3 +393,155 @@ class TestAddToDict():
         with pytest.raises(AttributeError):
             util.add_to_dict(data_dict, key, value)
 
+
+class TestExtractFunctionFromFunctionDict:
+
+    def dummy_function_1(self): # pragma: no cover
+        pass
+
+    def dummy_function_2(self): # pragma: no cover
+        pass
+
+    def dummy_function_3(self): # pragma: no cover
+        pass
+
+    def test_empty_version_ordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict)
+
+    def test_empty_version_unordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            '0.0.4': self.dummy_function_1,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict)
+
+    def test_version_225_ordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict, '2.2.5')
+
+    def test_version_326_ordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict, '3.2.6')
+
+    def test_version_112_ordered_should_return_dummy_function_2(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_2 == util.extract_function_from_function_dict(func_dict, '1.1.2')
+
+    def test_version_122_ordered_should_return_dummy_function_2(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_2 == util.extract_function_from_function_dict(func_dict, '1.2.2')
+
+    def test_version_004_ordered_should_return_dummy_function_1(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_1 == util.extract_function_from_function_dict(func_dict, '0.0.4')
+
+    def test_version_005_ordered_should_return_dummy_function_1(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '1.1.2': self.dummy_function_2,
+            '2.2.5': self.dummy_function_3,
+            }
+        assert self.dummy_function_1 == util.extract_function_from_function_dict(func_dict, '0.0.5')
+
+    def test_version_225_unordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict, '2.2.5')
+
+    def test_version_326_unordered_should_return_dummy_function_3(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_3 == util.extract_function_from_function_dict(func_dict, '3.2.6')
+
+    def test_version_112_unordered_should_return_dummy_function_2(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_2 == util.extract_function_from_function_dict(func_dict, '1.1.2')
+
+    def test_version_122_unordered_should_return_dummy_function_2(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_2 == util.extract_function_from_function_dict(func_dict, '1.2.2')
+
+    def test_version_004_unordered_should_return_dummy_function_1(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_1 == util.extract_function_from_function_dict(func_dict, '0.0.4')
+
+    def test_version_005_unordered_should_return_dummy_function_1(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        assert self.dummy_function_1 == util.extract_function_from_function_dict(func_dict, '0.0.5')
+
+    def test_version_003_unordered_should_raise_AssertionError(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        with pytest.raises(AssertionError):
+            util.extract_function_from_function_dict(func_dict, '0.0.3')
+
+
+    def test_version_unequal_format_raises_AssertionError(self):
+        func_dict = {
+            '0.0.4': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        with pytest.raises(AssertionError):
+            util.extract_function_from_function_dict(func_dict, '1.0')
+
+    def test_version_unequal_format_in_keys_raises_AssertionError(self):
+        func_dict = {
+            '0.0': self.dummy_function_1,
+            '2.2.5': self.dummy_function_3,
+            '1.1.2': self.dummy_function_2,
+            }
+        with pytest.raises(AssertionError):
+            util.extract_function_from_function_dict(func_dict, '1.0.1')
+
