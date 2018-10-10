@@ -30,39 +30,40 @@ import pandas as pd # type: ignore
 from . import util
 
 
-def load_motioncor2_1_0_0(file_name: str) -> pd.DataFrame:
+def load_unblur_1_0_2(file_name: str) -> pd.DataFrame:
     """
-    Read the motioncor2 shift files.
+    Read the motioncor shift files.
 
     Arguments:
-    file_name - Name of the motioncor2 shift file
+    file_name - Name of the motioncor shift file
 
     Returns:
     Pandas data frame containing the extended header information
     """
+    input_data: pd.DataFrame
     output_data: pd.DataFrame
 
-    output_data = util.load_file(
+    input_data = util.load_file(
         file_name,
-        names=['shift_x', 'shift_y'],
-        usecols=[1, 2],
         comment='#',
         )
+    output_data = input_data.transpose()
+    output_data.rename(columns={0: 'shift_x', 1: 'shift_y'}, inplace=True)
     output_data['shift_x'] -= output_data['shift_x'].iloc[0]
     output_data['shift_y'] -= output_data['shift_y'].iloc[0]
 
     return output_data
 
 
-def load_motioncor2(
+def load_unblur(
         file_name: str,
         version: typing.Optional[str]=None
     ) -> pd.DataFrame:
     """
-    Load the motioncor2 shift file based on the version number
+    Load the unblur shift file based on the version number
 
     Arguments:
-    file_name - Path to the input motioncor2 file.
+    file_name - Path to the input unblur file.
 
     Returns:
     Pnadas dataframe containing the motion information
@@ -77,7 +78,7 @@ def load_motioncor2(
     function: typing.Callable[[str], pd.DataFrame]
 
     function_dict = {
-        '1.0.0': load_motioncor2_1_0_0,
+        '1.0.2': load_unblur_1_0_2,
         }
 
     function = util.extract_function_from_function_dict(function_dict, version)
