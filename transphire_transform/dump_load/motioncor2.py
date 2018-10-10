@@ -22,23 +22,63 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import mrcfile # type: ignore
+
+import typing
+
 import pandas as pd # type: ignore
 
+from . import util
 
-def load_mrc_header(file_name: str) -> pd.DataFrame:
+
+def load_motioncor2_1_0_0(file_name: str) -> pd.DataFrame:
     """
-    Read the header of an mrc file.
+    Read the motioncor shift files.
 
     Arguments:
-    file_name - Name of the mrc file
+    file_name - Name of the motioncor shift file
 
     Returns:
     Pandas data frame containing the extended header information
     """
     output_data: pd.DataFrame
 
-    with mrcfile.open(file_name) as mrc:
-        output_data = pd.DataFrame(mrc.extended_header)
+    output_data = util.load_file(
+        file_name,
+        names=['shift_x', 'shift_y'],
+        usecols=[1, 2],
+        comment='#',
+        )
+    output_data['shift_x'] -= output_data['shift_x'].iloc[0]
+    output_data['shift_y'] -= output_data['shift_y'].iloc[0]
 
-    return output_data.iloc[0]
+    return output_data
+
+
+def load_motioncor2(
+        file_name: str,
+        version: typing.Optional[str]=None
+    ) -> pd.DataFrame:
+    """
+    Load the motioncor shift file based on the version number
+
+    Arguments:
+    file_name - Path to the output partres file.
+
+    Returns:
+    Pnadas dataframe containing the motion information
+    """
+    function_dict: typing.Dict[
+        str,
+        typing.Callable[
+            [str],
+            pd.DataFrame
+            ]
+        ]
+    function: typing.Callable[[str], pd.DataFrame]
+
+    function_dict = {
+        '1.0.0': load_motioncor2_1_0_0,
+        }
+
+    function = util.extract_function_from_function_dict(function_dict, version)
+    return function(file_name)

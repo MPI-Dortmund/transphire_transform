@@ -150,7 +150,7 @@ def load_ctffind(
     version - Cter version default the latest version
 
     Returns:
-    None
+    Pandas dataframe containing the ctffind file information
     """
     function_dict: typing.Dict[
         str,
