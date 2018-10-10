@@ -39,3 +39,7 @@ from .dump_load.xml import load_xml # silence pyflakes
 assert load_xml
 from .dump_load.motioncor2 import load_motioncor2 # silence pyflakes
 assert load_motioncor2
+from .dump_load.unblur import load_unblur # silence pyflakes
+assert load_unblur
+from .dump_load.box import load_box # silence pyflakes
+assert load_box
