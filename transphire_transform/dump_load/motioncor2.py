@@ -32,10 +32,10 @@ from . import util
 
 def load_motioncor2_1_0_0(file_name: str) -> pd.DataFrame:
     """
-    Read the motioncor shift files.
+    Read the motioncor2 shift files.
 
     Arguments:
-    file_name - Name of the motioncor shift file
+    file_name - Name of the motioncor2 shift file
 
     Returns:
     Pandas data frame containing the extended header information
@@ -59,10 +59,10 @@ def load_motioncor2(
         version: typing.Optional[str]=None
     ) -> pd.DataFrame:
     """
-    Load the motioncor shift file based on the version number
+    Load the motioncor2 shift file based on the version number
 
     Arguments:
-    file_name - Path to the output partres file.
+    file_name - Path to the input motioncor2 file.
 
     Returns:
     Pnadas dataframe containing the motion information
