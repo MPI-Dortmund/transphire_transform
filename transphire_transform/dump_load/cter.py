@@ -68,7 +68,7 @@ def get_cter_v1_0_header_names() -> typing.List[str]:
 
 def load_cter(
         file_name: str,
-        version: typing.Optional[float]=None
+        version: typing.Optional[str]=None
     ) -> None:
     """
     Create a cter partres file based on the cter_data information.
@@ -81,25 +81,21 @@ def load_cter(
     Returns:
     None
     """
-    level_func_dict: typing.Dict[
-        float,
+    function_dict: typing.Dict[
+        str,
         typing.Callable[
             [str],
-            None
+            pd.DataFrame
             ]
         ]
+    function: typing.Callable[[str], pd.DataFrame]
 
     function_dict = {
-        1.0: load_cter_v1_0,
+        '1.0': load_cter_v1_0,
         }
 
-    if version is None:
-        function_dict.values()[-1](file_name)
-    else:
-        for key in function_dict:
-            if version >= key:
-                function_dict[key](file_name)
-    return None
+    function = util.extract_function_from_function_dict(function_dict, version)
+    return function(file_name)
 
 
 def load_cter_v1_0(file_name: str) -> pd.DataFrame:
@@ -129,7 +125,7 @@ def load_cter_v1_0(file_name: str) -> pd.DataFrame:
 def dump_cter(
         file_name: str,
         cter_data: pd.DataFrame,
-        version: typing.Optional[float]=None
+        version: typing.Optional[str]=None
     ) -> None:
     """
     Create a cter partres file based on the cter_data information.
@@ -143,30 +139,21 @@ def dump_cter(
     Returns:
     None
     """
-    level_func_dict: typing.Dict[
-        float,
+    function_dict: typing.Dict[
+        str,
         typing.Callable[
             [str, pd.DataFrame],
             None
             ]
         ]
-    function = typing.Callable[[str, pd.DataFrame], None]
+    function: typing.Callable[[str, pd.DataFrame], None]
 
     function_dict = {
-        1.0: dump_cter_v1_0,
+        '1.0': dump_cter_v1_0,
         }
 
-    if version is None:
-        for key in reversed(function_dict):
-            function = function_dict[key]
-            break
-    else:
-        for key in function_dict:
-            if version >= key:
-                function = function_dict[key]
-                break
-    function(file_name, cter_data)
-    return None
+    function = util.extract_function_from_function_dict(function_dict, version)
+    return function(file_name, cter_data)
 
 
 def dump_cter_v1_0(file_name: str, cter_data: pd.DataFrame) -> None:

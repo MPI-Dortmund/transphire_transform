@@ -202,3 +202,55 @@ def add_to_dict(data_dict: typing.Dict[str, str], key: str, value: str) -> None:
         else:
             data_dict[key.strip()] = value
     return None
+
+
+def extract_function_from_function_dict(
+        function_dict: typing.Dict[
+            str,
+            typing.Callable[..., typing.Any]
+            ],
+        version: typing.Optional[str]
+    ) -> typing.Callable[..., typing.Any]:
+    """
+    Get the correct function from the function dict based on the version.
+    Use the version that is closest to the specified one.
+
+    Arguments:
+    function_dict - Dictionary with the version as key and the function as argument
+    version -  Version number as string in the format X.X.X.X.X....
+
+    Returns:
+    function
+    """
+    function: typing.Callable[..., typing.Any]
+    version_numbers: typing.List[int]
+    version_match: typing.Optional[str]
+    is_smaller: bool
+
+    if version is None:
+        function = list(function_dict.values())[-1]
+
+    else:
+        version_numbers = [int(num) for num in version.split('.')]
+        version_match = None
+
+        for key in function_dict:
+            key_numbers = [int(num) for num in key.split('.')]
+            assert len(version_numbers) == len(key_numbers)
+            is_smaller = False
+            for version_number, key_number in zip(version_numbers, key_numbers):
+                if version_number < key_number:
+                    is_smaller = True
+                    break
+            if is_smaller:
+                continue
+            else:
+                version_match = key
+                break
+
+        if version_match is not None:
+            function = function_dict[version_match]
+        else:
+            assert 'Version number too small', version
+
+    return function
