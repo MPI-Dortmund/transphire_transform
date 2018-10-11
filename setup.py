@@ -31,7 +31,7 @@ with open(os.path.join(CURRENT_DIR, 'README.md'), encoding='utf-8') as f:
 
 setuptools.setup(
     name='transphire_transform',
-    version='0.0.1',
+    version='0.0.2',
     description='Utilites to change between SPHIRE, RELION and to modify the data',
     long_description=LONG_DESCRIPTION,
     url='https://github.com/MPI-Dortmund/transphire_transform',
@@ -45,7 +45,8 @@ setuptools.setup(
             ]
         },
     install_requires=[
-        'pandas',
+        'pandas>=0.23.0,<0.24.0',
+        'mrcfile>=1.0.4,<1.1.0',
         ],
     python_requires='~=3.7',
     classifiers=(
