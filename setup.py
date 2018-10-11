@@ -47,12 +47,13 @@ setuptools.setup(
     install_requires=[
         'pandas',
         ],
-    python_requires='~=2.7',
+    python_requires='~=3.7',
     classifiers=(
-        'Programming Language :: Python :: 2.7, 3.7',
-        'License :: OSI Approved :: MIT',
-        'Operating System :: POSIX :: Linux',
-        'Operating System :: MacOS :: Linux',
+        'Programming Language :: Python :: 3.7',
+        'License :: OSI Approved',
+        'Operating System :: POSIX',
+        'Operating System :: Unix',
+        'Operating System :: MacOS',
         'Development Status :: 4 - Beta'
         ),
     )
